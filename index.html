@@ -363,6 +363,8 @@
     if(!keepScroll) $('main').innerHTML='<div class="loading">불러오는 중…</div>';
     call('getReport',{token:TOKEN,month:month}).then(function(r){
       if(!r.ok){ store.set(null); show(false); $('lerr').textContent='세션이 만료되었습니다. 다시 로그인하세요.'; return; }
+      const ORD={'자금':1,'회계':2,'인사':3,'총무':4};
+      r.kpi=(r.kpi||[]).map(function(x,i){return [x,i]}).sort(function(a,b){ return ((ORD[a[0]['부문']]||9)-(ORD[b[0]['부문']]||9)) || (a[1]-b[1]); }).map(function(p){return p[0]});
       CUR=r; EDITING=null; renderDash(r.dash); render(); if(keepScroll) window.scrollTo(0,y);
     }).catch(function(){ $('main').innerHTML='<div class="loading">데이터를 불러오지 못했습니다.</div>'; });
   }
@@ -395,6 +397,8 @@
       let m=g.mids.find(function(x){return x.t===it['중제목']}); if(!m){m={t:it['중제목'],list:[]};g.mids.push(m);}
       m.list.push(it);
     });
+    const lead=function(t){ const m=String(t).match(/^\s*(\d+)/); return m?Number(m[1]):999; };
+    groups.forEach(function(g){ g.mids.sort(function(a,b){ return lead(a.t)-lead(b.t); }); });
     groups.forEach(function(g,gi){
       const gid='g'+gi;
       nav+='<a class="l1" href="#'+gid+'">'+esc(g.t)+'</a>';
