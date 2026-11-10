@@ -507,7 +507,8 @@
     if(EDITING){ toast('먼저 편집 중인 항목을 저장하거나 취소하세요.', true); return; }
     EDITING='kpi';
     const box=$('kpiBox'), k=CUR.kpi;
-    const inp=function(x,key,lock){ return lock?'<td class="n lock" title="인사 DB 자동 연동 값">'+esc(x[key]||'–')+'</td>':'<td><input class="n" inputmode="decimal" data-k="'+key+'" value="'+esc(x[key]||'')+'"></td>'; };
+    const num=function(s){ return String(s||'').replace(/[^0-9.\-]/g,''); };
+    const inp=function(x,key,lock){ return lock?'<td class="n lock" title="인사 DB 자동 연동 값">'+esc(x[key]||'–')+'</td>':'<td><input class="n" inputmode="decimal" data-k="'+key+'" value="'+esc(num(x[key]))+'"></td>'; };
     let h='<div class="kpihd"><span>부문별 핵심 지표 <span class="tag edit">편집 중</span></span></div><div class="tblwrap ekpi"><table><thead><tr><th>부문</th><th>지표</th><th>단위</th><th>계획</th><th>실적</th><th>전월</th><th>전년동월</th><th>평가</th><th>비고</th></tr></thead><tbody>';
     k.forEach(function(x,i){
       const auto=String(x['비고']).trim()==='자동';
@@ -524,8 +525,9 @@
         const rows=[], bad=[];
         [].forEach.call(box.querySelectorAll('tbody tr'),function(tr){
           const x=k[Number(tr.getAttribute('data-i'))], o={'부문':x['부문'],'지표':x['지표']};
-          [].forEach.call(tr.querySelectorAll('[data-k]'),function(el){ const key=el.getAttribute('data-k'); o[key]=el.value;
-            if(['계획','실적','전월','전년동월'].indexOf(key)>=0 && el.value.trim() && isNaN(Number(el.value.replace(/,/g,'')))) bad.push(x['지표']+' '+key); });
+          [].forEach.call(tr.querySelectorAll('[data-k]'),function(el){ const key=el.getAttribute('data-k'); const isNum=['계획','실적','전월','전년동월'].indexOf(key)>=0;
+            const val=isNum?el.value.replace(/[,₩\s]/g,''):el.value; o[key]=val;
+            if(isNum && val && isNaN(Number(val))) bad.push(x['지표']+' '+key); });
           rows.push(o);
         });
         if(bad.length){ toast('숫자가 아닌 값: '+bad[0], true); return; }
