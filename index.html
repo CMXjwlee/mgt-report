@@ -92,6 +92,7 @@
   .card .guide{margin-top:6px;font-size:13px;color:var(--mute);background:#f6f8fa;border-radius:8px;padding:8px 12px}
   .card .auto{margin-top:10px;font-size:14px;white-space:pre-wrap;background:#eef4ff;border-left:3px solid var(--accent);border-radius:6px;padding:10px 14px;color:#1d3157}
   .card .auto b{display:block;font-size:12px;color:var(--accent);margin-bottom:4px}
+  .card .auto.tbl{white-space:normal} .card .auto .vtbl{background:#fff;margin-top:6px} .card .auto .autonote{font-size:12px;color:var(--mute);margin-top:6px}
   .card a.att{display:inline-block;margin-top:10px;font-size:14px;color:var(--accent);font-weight:600;text-decoration:none}
   .tag{font-size:12px;padding:3px 9px;border-radius:999px;background:#eef1f5;color:var(--sub)}
   .b{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
@@ -238,7 +239,7 @@
     18: { type:'text',  ph:'자동 집계에 대한 코멘트' },
     19: { type:'text',  ph:'추이에 대한 코멘트' },
     20: { type:'text',  ph:'퇴사 사유 분석, 입사자 구성 코멘트' },
-    21: { type:'table', cols:['직무','목표','진행','완료','상태'] },
+    21: { type:'table', cols:['직무','목표 인원','비고'] },
     22: { type:'text',  ph:'인건비 계획 대비, 근태 코멘트' },
     23: { type:'table', cols:['구분','내용','일정','상태'], rows:['법정 의무교육','평가 일정','노사협의회'] },
     24: { type:'table', cols:['이슈','원인','영향','대응 방안'] },
@@ -416,13 +417,24 @@
     $('nav').innerHTML=nav; $('main').innerHTML=html;
   }
 
+  function autoBox(it, locked){
+    const auto=String(it['자동데이터']||'').trim(); if(!auto) return '';
+    const src=String(it['No'])==='21'?'나인하이어 연동':'인사 DB 연동';
+    const lines=auto.split('\n'), tbl=lines.filter(function(l){return l.indexOf('|')>=0});
+    let inner;
+    if(tbl.length>=2){
+      const cols=tbl[0].split('|').map(function(c){return c.trim()}), rows=tbl.slice(1).map(function(l){return l.split('|').map(function(c){return c.trim()})});
+      inner=tableHtml(cols, rows)+lines.filter(function(l){return l.indexOf('|')<0}).map(function(l){return '<div class="autonote">'+esc(l)+'</div>'}).join('');
+    } else inner=esc(auto);
+    return '<div class="auto'+(tbl.length>=2?' tbl':'')+'"><b>자동 집계 · '+src+(locked?' (수정 불가)':'')+'</b>'+inner+'</div>';
+  }
   function cardView(it){
     const auto=String(it['자동데이터']||'').trim(), url=safeUrl(it['첨부링크']), body=viewBody(it);
     const who=String(it['수정자']||'').trim();
     return '<div class="sm">'+esc(it['소제목'])+'</div>'+
       '<div class="hd"><span class="nm">'+esc(it['세부항목'])+'</span><span class="tag">'+esc(it['작성부서'])+'</span>'+badge(it['평가'])+
         (canEdit()?'<button class="ebtn" data-edit="'+esc(it['No'])+'">수정</button>':'')+'</div>'+
-      (auto?'<div class="auto"><b>자동 집계 · 인사 DB 연동</b>'+esc(auto)+'</div>':'')+
+      (auto?autoBox(it):'')+
       (body || ((auto?'':'<div class="empty">미작성</div>')+'<div class="guide">작성 가이드 · '+esc(it['작성가이드'])+'</div>'))+
       (url?'<a class="att" target="_blank" rel="noopener" href="'+esc(url)+'">첨부 자료 열기 →</a>':'')+
       (who?'<div class="stamp">최종 수정 '+esc(who)+' · '+esc(it['수정일시']||'')+'</div>':'');
@@ -455,7 +467,7 @@
     }
     card.innerHTML='<div class="sm">'+esc(it['소제목'])+'</div><div class="hd"><span class="nm">'+esc(it['세부항목'])+'</span><span class="tag">'+esc(it['작성부서'])+'</span><span class="tag edit">편집 중</span></div>'+
       '<div class="guide">작성 가이드 · '+esc(it['작성가이드'])+'</div>'+
-      (String(it['자동데이터']||'').trim()?'<div class="auto"><b>자동 집계 · 인사 DB 연동 (수정 불가)</b>'+esc(it['자동데이터'])+'</div>':'')+
+      autoBox(it, true)+
       '<div class="efield">'+f+'</div>'+
       '<div class="erow"><label>평가<select class="eeval">'+['','양호','주의','미흡'].map(function(v){return '<option'+(String(it['평가']||'')===v?' selected':'')+' value="'+v+'">'+(v||'없음')+'</option>'}).join('')+'</select></label>'+
       '<label class="grow">첨부 링크<input class="eurl" placeholder="https://drive.google.com/…" value="'+esc(it['첨부링크']||'')+'"></label></div>'+
