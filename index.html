@@ -90,6 +90,8 @@
   .card .body{margin-top:10px;white-space:pre-wrap;font-size:15px}
   .card .empty{margin-top:10px;font-size:14px;color:var(--mute)}
   .card .guide{margin-top:6px;font-size:13px;color:var(--mute);background:#f6f8fa;border-radius:8px;padding:8px 12px}
+  .card .auto{margin-top:10px;font-size:14px;white-space:pre-wrap;background:#eef4ff;border-left:3px solid var(--accent);border-radius:6px;padding:10px 14px;color:#1d3157}
+  .card .auto b{display:block;font-size:12px;color:var(--accent);margin-bottom:4px}
   .card a.att{display:inline-block;margin-top:10px;font-size:14px;color:var(--accent);font-weight:600;text-decoration:none}
   .tag{font-size:12px;padding:3px 9px;border-radius:999px;background:#eef1f5;color:var(--sub)}
   .b{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
@@ -217,7 +219,7 @@
 
   function render(r){
     const items=r.items, kpi=r.kpi;
-    const done=items.filter(function(x){return String(x['보고내용']).trim()}).length;
+    const done=items.filter(function(x){return String(x['보고내용']||'').trim()||String(x['자동데이터']||'').trim()}).length;
     const pct=items.length?Math.round(done/items.length*100):0;
     const ym=r.month.split('-');
     let html='<div class="cover"><div><div class="meta">㈜컨트로맥스 · 경영지원팀 · '+esc(ym[0])+'년</div><h2>월간 경영 보고 ('+Number(ym[1])+'월)</h2></div>'+
@@ -239,10 +241,11 @@
         nav+='<a class="l2" href="#'+mid+'">'+esc(m.t)+'</a>';
         html+='<h4 class="mid" id="'+mid+'">'+esc(m.t)+'</h4><div class="grid">';
         m.list.forEach(function(it){
-          const body=String(it['보고내용']).trim(), url=safeUrl(it['첨부링크']);
+          const body=String(it['보고내용']||'').trim(), auto=String(it['자동데이터']||'').trim(), url=safeUrl(it['첨부링크']);
           html+='<div class="card"><div class="sm">'+esc(it['소제목'])+'</div>'+
             '<div class="hd"><span class="nm">'+esc(it['세부항목'])+'</span><span class="tag">'+esc(it['작성부서'])+'</span>'+badge(it['평가'])+'</div>'+
-            (body?'<div class="body">'+esc(body)+'</div>':'<div class="empty">미작성</div><div class="guide">작성 가이드 · '+esc(it['작성가이드'])+'</div>')+
+            (auto?'<div class="auto"><b>자동 집계 · 인사 DB 연동</b>'+esc(auto)+'</div>':'')+
+            (body?'<div class="body">'+esc(body)+'</div>':(auto?'':'<div class="empty">미작성</div>')+'<div class="guide">작성 가이드 · '+esc(it['작성가이드'])+'</div>')+
             (url?'<a class="att" target="_blank" rel="noopener" href="'+esc(url)+'">첨부 자료 열기 →</a>':'')+
             '</div>';
         });
