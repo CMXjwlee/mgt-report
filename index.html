@@ -106,6 +106,52 @@
   .na{color:#b6bec9}
   .loading{padding:80px;text-align:center;color:var(--sub)}
 
+
+  /* ── 보기/편집 ── */
+  .card.wide{grid-column:1/-1}
+  .card.editing{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,214,.12)}
+  .ebtn{margin-left:auto;height:30px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--sub);font-size:13px;font-weight:600;cursor:pointer}
+  .ebtn:hover{border-color:var(--accent);color:var(--accent)}
+  .tag.edit{background:#e6efff;color:var(--accent);font-weight:700}
+  .tag.autotag{background:#eef4ff;color:var(--accent)}
+  .stamp{margin-top:10px;font-size:12px;color:var(--mute)}
+  .vlist{margin:10px 0 0;padding-left:20px} .vlist li{margin:3px 0}
+  .vlinks{margin:10px 0 0;padding-left:0;list-style:none} .vlinks li{margin:4px 0} .vlinks a{color:var(--accent);font-weight:600;text-decoration:none}
+  .vtbl{margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:auto}
+  .vtbl table{min-width:0;font-size:14px} .vtbl th,.vtbl td{padding:9px 12px;white-space:normal} .vtbl td{text-align:center}
+  .efield{margin-top:12px}
+  .etext{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font:inherit;font-size:15px;line-height:1.6;resize:vertical;outline:none}
+  .etext:focus,.efield input:focus,.ekpi input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,214,.12)}
+  .etbl{border:1px solid var(--line);border-radius:10px;overflow:auto;padding:4px}
+  .etbl table{min-width:0;font-size:14px} .etbl th{padding:8px} .etbl td{padding:4px;border-bottom:0}
+  .etbl input,.elist input,.ekpi input,.ekpi select{width:100%;height:38px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;font:inherit;font-size:14px;outline:none;background:#fff}
+  .ekpi input.n{text-align:right} .ekpi select{min-width:86px} .ekpi td{padding:6px 8px} .ekpi td.lock{color:var(--mute);background:#f6f8fa}
+  .delrow,.delitem{width:30px;height:30px;border:0;background:none;color:var(--mute);font-size:18px;cursor:pointer;border-radius:6px} .delrow:hover,.delitem:hover{background:var(--badbg);color:var(--bad)}
+  .addrow,.additem{margin:6px 4px 4px;height:32px;padding:0 12px;border:1px dashed #b9c4d3;border-radius:8px;background:#fafbfd;color:var(--sub);font-size:13px;cursor:pointer}
+  .elist .li{display:flex;align-items:center;gap:8px;margin-bottom:6px} .elist .li span{color:var(--mute)}
+  .erow{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap} .erow label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--sub)} .erow .grow{flex:1;min-width:240px}
+  .erow select,.erow input{height:40px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;font:inherit;font-size:14px;background:#fff;outline:none}
+  .eact{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:14px}
+  .eact .hint{margin-right:auto;font-size:12px;color:var(--mute)}
+  .eact button{height:40px;padding:0 18px;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px}
+  .eact .cancel{border:1px solid var(--line);background:#fff;color:var(--sub)}
+  .eact .save{border:0;background:var(--navy);color:#fff} .eact .save:disabled{opacity:.6}
+  .kpihd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-weight:700;color:var(--sub);font-size:14px}
+  #kpiBox.editing .tblwrap{border-color:var(--accent)}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;transition:all .2s;z-index:50;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%)} .toast.bad{background:var(--bad)}
+
+  /* 분야별 대시보드 탭 */
+  .dash{display:flex;gap:8px;margin-left:8px;position:static;top:auto;align-self:center;max-height:none;overflow:visible;padding:0}
+  .dash a,.dash span.d{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 13px;border-radius:9px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#fff;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap}
+  .dash a:hover{background:rgba(255,255,255,.16)}
+  .dash span.d{cursor:default;color:rgba(255,255,255,.75)}
+  .dash i{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .dash .on i{background:#2fd57a;box-shadow:0 0 0 3px rgba(47,213,122,.22),0 0 8px #2fd57a}
+  .dash .wip i{background:#ffc93c;box-shadow:0 0 0 3px rgba(255,201,60,.22)}
+  .dash .off i{background:#ff5a52;box-shadow:0 0 0 3px rgba(255,90,82,.22)}
+  .hbar #newm{border-style:dashed}
+
   @media (max-width:960px){
     #login{grid-template-columns:1fr}
     .brand{padding:36px 28px;min-height:auto}
@@ -113,7 +159,7 @@
     .bfoot{display:none}
     .layout{grid-template-columns:1fr;padding:20px 16px 60px}
     nav{display:none}
-    .hbar{padding:0 16px;gap:10px} .hbar .wm,.hbar .sep,.hbar .who{display:none} .hbar .tt{font-size:14px;white-space:nowrap} .hbar button{white-space:nowrap;padding:0 10px} .hbar select{padding:0 8px}
+    .hbar{padding:0 16px;gap:10px} .hbar .wm,.hbar .sep,.hbar .who,.dash,.hbar #newm{display:none!important} .hbar .tt{font-size:14px;white-space:nowrap} .hbar button{white-space:nowrap;padding:0 10px} .hbar select{padding:0 8px}
     .brand{gap:28px}
     .grid{grid-template-columns:1fr}
   }
@@ -148,12 +194,16 @@
   </div>
 </div>
 
+<div id="toast" class="toast"></div>
+
 <!-- 보고 화면 -->
 <div id="app" class="hidden">
   <header><div class="hbar">
     <span class="wm">CONTROMAX</span><span class="sep"></span><span class="tt">경영지원팀 월간 보고</span>
+    <nav class="dash" id="dash" aria-label="분야별 대시보드"></nav>
     <span class="sp"></span>
     <select id="month" aria-label="보고월"></select>
+    <button id="newm" class="hidden" title="최근 보고월의 목차를 복사해 새 보고월을 만듭니다">+ 새 보고월</button>
     <span class="who" id="who"></span>
     <button id="out">로그아웃</button>
   </div></header>
@@ -167,6 +217,72 @@
   /* Apps Script 웹앱 주소 (로그인·데이터 API) */
   const API = 'https://script.google.com/macros/s/AKfycbybGdLGwlHWiLU8QL4dT2jyIBABrCjUX4MNei2dWVbtd2ChVbz2Vy6IQDpWnjOVvX_3iQ/exec';
 
+  /* ── 항목별 입력 유형 (작성 가이드 기준, No로 구분) ──
+     text  : 서술형
+     list  : 목록형 (n = 기본 줄 수)
+     table : 표형 (cols = 열, rows = 기본 첫 열 값)
+     links : 자료명 | 링크 표                                     */
+  const SCHEMA = {
+    3:  { type:'text',  ph:'KPI 표에 대한 종합 코멘트 (양호/주의/미흡 판단 근거)' },
+    4:  { type:'list',  n:3, ph:'당월 주요 이슈' },
+    5:  { type:'table', cols:['안건','요청 내용','기한'] },
+    6:  { type:'table', cols:['구분','당월','전월','증감','비고'], rows:['매출액','매출원가','매출총이익','판매관리비','영업이익','영업외손익','당기순이익'] },
+    7:  { type:'table', cols:['계정/비용','당월 실적','계획','차이','평가'] },
+    10: { type:'table', cols:['월','매출','영업이익','당기순이익','비고'], rowsFn:'next6' },
+    11: { type:'table', cols:['이슈','원인','영향','대응 방안'] },
+    12: { type:'table', cols:['월','월말 가용잔액','구분'], rowsFn:'cash' },
+    13: { type:'table', cols:['항목','당월 실적','계획','전월','차이'], rows:['영업 수입','영업 지출','투자 지출','재무 수입','재무 지출','고정비'] },
+    15: { type:'text',  ph:'자금 추정 결과와 주요 이슈' },
+    16: { type:'list',  n:3, ph:'잔고 변동 원인 / 최소 유지 잔고 대비 여유' },
+    17: { type:'table', cols:['금융기관','잔액','금리(%)','만기','상환 일정'] },
+    18: { type:'text',  ph:'자동 집계에 대한 코멘트' },
+    19: { type:'text',  ph:'추이에 대한 코멘트' },
+    20: { type:'text',  ph:'퇴사 사유 분석, 입사자 구성 코멘트' },
+    21: { type:'table', cols:['직무','목표','진행','완료','상태'] },
+    22: { type:'text',  ph:'인건비 계획 대비, 근태 코멘트' },
+    23: { type:'table', cols:['구분','내용','일정','상태'], rows:['법정 의무교육','평가 일정','노사협의회'] },
+    24: { type:'table', cols:['이슈','원인','영향','대응 방안'] },
+    25: { type:'table', cols:['항목','당월','누계','계획 대비','차이 원인'] },
+    26: { type:'table', cols:['구분','내용','기한/일정','비고'] },
+    27: { type:'table', cols:['점검 항목','일자','결과','조치'] },
+    28: { type:'list',  n:3, ph:'사내 행사 / 거래처 대응' },
+    29: { type:'table', cols:['이슈','원인','영향','대응 방안'] },
+    30: { type:'table', cols:['안건','주관','현황','검토안','실무 의견'] },
+    31: { type:'table', cols:['부서','추진 과제','일정','담당','비고'] },
+    32: { type:'links' }, 33: { type:'links' }, 34: { type:'links' }, 35: { type:'links' }
+  };
+  const schemaOf = function(it){ return SCHEMA[Number(it['No'])] || { type:'text' }; };
+
+  /* ── 시트 저장 형식 (시트에서도 읽고 고칠 수 있는 텍스트) ──
+     표 : 첫 줄 열 이름, 이후 행 — 칸 구분 " | "
+     목록: 줄마다 "• 내용"                                        */
+  const SEP=' | ';
+  function tblToText(cols, rows){
+    const body=rows.filter(function(r){return r.some(function(c){return String(c).trim()})})
+                   .map(function(r){return r.map(function(c){return String(c).replace(/\|/g,'/').replace(/\n/g,' ').trim()}).join(SEP)});
+    return body.length ? [cols.join(SEP)].concat(body).join('\n') : '';
+  }
+  function textToTbl(cols, text){
+    const lines=String(text||'').split('\n').map(function(l){return l.trim()}).filter(Boolean);
+    if(!lines.length || !lines.some(function(l){return l.indexOf('|')>=0})) return null;
+    let rows=lines.map(function(l){return l.split('|').map(function(c){return c.trim()})});
+    const norm=function(a){return a.join('').replace(/\s/g,'')};
+    if(norm(rows[0])===norm(cols)) rows=rows.slice(1);
+    return rows.map(function(r){ const o=r.slice(0,cols.length); while(o.length<cols.length) o.push(''); if(r.length>cols.length) o[cols.length-1]=r.slice(cols.length-1).join(' / '); return o; });
+  }
+  function listToText(items){ return items.map(function(x){return String(x).replace(/\n/g,' ').trim()}).filter(Boolean).map(function(x){return '• '+x}).join('\n'); }
+  function textToList(text){ return String(text||'').split('\n').map(function(l){return l.replace(/^\s*[•\-\*·]\s*/,'').trim()}).filter(Boolean); }
+
+  function defaultRows(sc, month){
+    if(sc.rows) return sc.rows.map(function(r){ const a=[r]; while(a.length<sc.cols.length) a.push(''); return a; });
+    const ym=month.split('-').map(Number), lab=function(off){ const d=new Date(ym[0], ym[1]-1+off, 1); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2); };
+    const blank=function(n){ const a=[]; for(let i=1;i<n;i++) a.push(''); return a; };
+    if(sc.rowsFn==='cash'){ const o=[]; for(let k=-5;k<=2;k++) o.push([lab(k),'',k<=0?'실적':'전망']); return o; }
+    if(sc.rowsFn==='next6'){ const o=[]; for(let k=0;k<6;k++) o.push([lab(k)].concat(blank(sc.cols.length))); return o; }
+    return [blank(sc.cols.length+1)];
+  }
+
+  /* ── 공통 ── */
   async function call(action, payload){
     if (window.MOCK_API) return window.MOCK_API(action, payload||{});
     const r = await fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
@@ -176,12 +292,14 @@
   }
   const store={get:function(){try{return sessionStorage.getItem('mgt_t')}catch(e){return null}},
                set:function(v){try{v?sessionStorage.setItem('mgt_t',v):sessionStorage.removeItem('mgt_t')}catch(e){}}};
-  let TOKEN=null;
+  let TOKEN=null, ME=null, CUR=null, EDITING=null;
   const $=function(id){return document.getElementById(id)};
   const esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
   const badge=function(v){ v=String(v||'').trim(); if(!v) return '';
     const c=v==='양호'?'good':v==='주의'?'warn':v==='미흡'?'bad':''; return '<span class="b '+c+'">'+esc(v)+'</span>'; };
   const safeUrl=function(u){ u=String(u||'').trim(); return /^https?:\/\//i.test(u)?u:''; };
+  const canEdit=function(){ return ME && ['editor','admin'].indexOf(String(ME.role||'').toLowerCase())>=0; };
+  function toast(msg, bad){ const t=$('toast'); t.textContent=msg; t.className='toast show'+(bad?' bad':''); clearTimeout(toast._t); toast._t=setTimeout(function(){t.className='toast'},2400); }
 
   $('eye').addEventListener('click',function(){ const p=$('pw'); const on=p.type==='password'; p.type=on?'text':'password'; this.textContent=on?'숨김':'표시'; });
 
@@ -196,29 +314,75 @@
   });
 
   $('out').addEventListener('click',function(){
-    call('logout',{token:TOKEN}).catch(function(){}).finally(function(){ TOKEN=null; store.set(null); show(false); });
+    if(EDITING && !confirmLeave()) return;
+    call('logout',{token:TOKEN}).catch(function(){}).finally(function(){ TOKEN=null; ME=null; store.set(null); show(false); });
   });
-  $('month').addEventListener('change',function(){ load(this.value); });
+  $('month').addEventListener('change',function(){ if(EDITING && !confirmLeave()){ this.value=CUR.month; return; } load(this.value); });
+  function confirmLeave(){ return window.confirm('저장하지 않은 수정 내용이 있습니다. 버리고 이동할까요?'); }
+  window.addEventListener('beforeunload',function(e){ if(EDITING){ e.preventDefault(); e.returnValue=''; } });
 
   function show(on){ $('login').classList.toggle('hidden',on); $('app').classList.toggle('hidden',!on); window.scrollTo(0,0); }
 
-  function enter(user,months){
-    $('who').textContent=user.name+' ('+user.sabun+')';
+  function renderDash(list){
+    const L=list||[], cls={'운영':'on','작성중':'wip','없음':'off'}, tip={'운영':'대시보드 열기','작성중':'대시보드 작성 중','없음':'대시보드 없음'};
+    $('dash').innerHTML=L.map(function(d){
+      const c=cls[d.status]||'off', t=esc(d.name), title=esc(tip[d.status]+(d.note?' · '+d.note:''));
+      return d.url ? '<a class="'+c+'" href="'+esc(d.url)+'" target="_blank" rel="noopener" title="'+title+'"><i></i>'+t+'</a>'
+                   : '<span class="d '+c+'" title="'+title+'"><i></i>'+t+'</span>';
+    }).join('');
+  }
+  function fillMonths(months, sel){
     $('month').innerHTML=months.map(function(m){return '<option value="'+esc(m)+'">'+esc(m.replace('-','년 '))+'월</option>'}).join('');
+    if(sel) $('month').value=sel;
+  }
+  $('newm').addEventListener('click',function(){
+    if(EDITING && !confirmLeave()) return;
+    const latest=[].map.call($('month').options,function(o){return o.value}).sort().pop()||'';
+    let next='';
+    if(latest){ const a=latest.split('-').map(Number); const d=new Date(a[0],a[1],1); next=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2); }
+    const m=window.prompt('새 보고월 (YYYY-MM)\n최근 보고월('+latest+')의 목차·KPI 틀만 복사되고 내용은 비어 있습니다.', next);
+    if(!m) return;
+    toast('새 보고월을 만드는 중…');
+    call('createMonth',{token:TOKEN, month:m.trim()}).then(function(r){
+      if(!r.ok){ toast(r.msg||'생성 실패', true); return; }
+      fillMonths(r.months, r.month); toast(r.month+' 보고월을 만들었습니다.'); load(r.month);
+    }).catch(function(){ toast('서버 연결 오류', true); });
+  });
+
+  function enter(user,months){
+    ME=user;
+    $('newm').classList.toggle('hidden',!canEdit());
+    $('who').textContent=user.name+' ('+user.sabun+')'+(canEdit()?' · 편집':'');
+    fillMonths(months);
     show(true);
     if(months.length) load(months[0]); else $('main').innerHTML='<div class="loading">등록된 보고월이 없습니다.</div>';
   }
 
-  function load(month){
-    $('main').innerHTML='<div class="loading">불러오는 중…</div>';
+  function load(month, keepScroll){
+    const y=window.scrollY;
+    if(!keepScroll) $('main').innerHTML='<div class="loading">불러오는 중…</div>';
     call('getReport',{token:TOKEN,month:month}).then(function(r){
       if(!r.ok){ store.set(null); show(false); $('lerr').textContent='세션이 만료되었습니다. 다시 로그인하세요.'; return; }
-      render(r);
+      CUR=r; EDITING=null; renderDash(r.dash); render(); if(keepScroll) window.scrollTo(0,y);
     }).catch(function(){ $('main').innerHTML='<div class="loading">데이터를 불러오지 못했습니다.</div>'; });
   }
 
-  function render(r){
-    const items=r.items, kpi=r.kpi;
+  /* ── 보기 ── */
+  function viewBody(it){
+    const sc=schemaOf(it), raw=String(it['보고내용']||'').trim();
+    if(!raw) return '';
+    if(sc.type==='table'){ const rows=textToTbl(sc.cols, raw); if(rows) return tableHtml(sc.cols, rows); }
+    if(sc.type==='links'){ const rows=textToTbl(['자료명','링크'], raw); if(rows) return '<ul class="vlinks">'+rows.map(function(r){ const u=safeUrl(r[1]); return '<li>'+(u?'<a target="_blank" rel="noopener" href="'+esc(u)+'">'+esc(r[0]||u)+' →</a>':esc(r.join(' ')))+'</li>'; }).join('')+'</ul>'; }
+    if(sc.type==='list'){ return '<ul class="vlist">'+textToList(raw).map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>'; }
+    return '<div class="body">'+esc(raw)+'</div>';
+  }
+  function tableHtml(cols, rows){
+    return '<div class="vtbl"><table><thead><tr>'+cols.map(function(c){return '<th>'+esc(c)+'</th>'}).join('')+'</tr></thead><tbody>'+
+      rows.map(function(r){return '<tr>'+r.map(function(c,i){return '<td class="'+(i===0?'l':'')+'">'+(String(c).trim()?esc(c):'<span class="na">–</span>')+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table></div>';
+  }
+
+  function render(){
+    const r=CUR, items=r.items, kpi=r.kpi;
     const done=items.filter(function(x){return String(x['보고내용']||'').trim()||String(x['자동데이터']||'').trim()}).length;
     const pct=items.length?Math.round(done/items.length*100):0;
     const ym=r.month.split('-');
@@ -235,20 +399,12 @@
       const gid='g'+gi;
       nav+='<a class="l1" href="#'+gid+'">'+esc(g.t)+'</a>';
       html+='<section class="big" id="'+gid+'"><h3>'+esc(g.t)+'</h3>';
-      if(gi===0) html+=kpiTable(kpi);
+      if(gi===0) html+='<div id="kpiBox">'+kpiView(kpi)+'</div>';
       g.mids.forEach(function(m,mi){
         const mid=gid+'_'+mi;
         nav+='<a class="l2" href="#'+mid+'">'+esc(m.t)+'</a>';
         html+='<h4 class="mid" id="'+mid+'">'+esc(m.t)+'</h4><div class="grid">';
-        m.list.forEach(function(it){
-          const body=String(it['보고내용']||'').trim(), auto=String(it['자동데이터']||'').trim(), url=safeUrl(it['첨부링크']);
-          html+='<div class="card"><div class="sm">'+esc(it['소제목'])+'</div>'+
-            '<div class="hd"><span class="nm">'+esc(it['세부항목'])+'</span><span class="tag">'+esc(it['작성부서'])+'</span>'+badge(it['평가'])+'</div>'+
-            (auto?'<div class="auto"><b>자동 집계 · 인사 DB 연동</b>'+esc(auto)+'</div>':'')+
-            (body?'<div class="body">'+esc(body)+'</div>':(auto?'':'<div class="empty">미작성</div>')+'<div class="guide">작성 가이드 · '+esc(it['작성가이드'])+'</div>')+
-            (url?'<a class="att" target="_blank" rel="noopener" href="'+esc(url)+'">첨부 자료 열기 →</a>':'')+
-            '</div>';
-        });
+        m.list.forEach(function(it){ html+='<div class="card'+(schemaOf(it).type==='table'?' wide':'')+'" id="c'+esc(it['No'])+'">'+cardView(it)+'</div>'; });
         html+='</div>';
       });
       html+='</section>';
@@ -256,17 +412,130 @@
     $('nav').innerHTML=nav; $('main').innerHTML=html;
   }
 
-  function kpiTable(k){
+  function cardView(it){
+    const auto=String(it['자동데이터']||'').trim(), url=safeUrl(it['첨부링크']), body=viewBody(it);
+    const who=String(it['수정자']||'').trim();
+    return '<div class="sm">'+esc(it['소제목'])+'</div>'+
+      '<div class="hd"><span class="nm">'+esc(it['세부항목'])+'</span><span class="tag">'+esc(it['작성부서'])+'</span>'+badge(it['평가'])+
+        (canEdit()?'<button class="ebtn" data-edit="'+esc(it['No'])+'">수정</button>':'')+'</div>'+
+      (auto?'<div class="auto"><b>자동 집계 · 인사 DB 연동</b>'+esc(auto)+'</div>':'')+
+      (body || ((auto?'':'<div class="empty">미작성</div>')+'<div class="guide">작성 가이드 · '+esc(it['작성가이드'])+'</div>'))+
+      (url?'<a class="att" target="_blank" rel="noopener" href="'+esc(url)+'">첨부 자료 열기 →</a>':'')+
+      (who?'<div class="stamp">최종 수정 '+esc(who)+' · '+esc(it['수정일시']||'')+'</div>':'');
+  }
+
+  /* ── 카드 수정 ── */
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('[data-edit]'); if(b){ openEditor(b.getAttribute('data-edit')); return; }
+    const k=e.target.closest('[data-kpiedit]'); if(k){ openKpiEditor(); return; }
+  });
+
+  function openEditor(no){
+    if(EDITING){ toast('먼저 편집 중인 항목을 저장하거나 취소하세요.', true); document.getElementById(EDITING==='kpi'?'kpiBox':'c'+EDITING).scrollIntoView({block:'center',behavior:'smooth'}); return; }
+    const it=CUR.items.find(function(x){return String(x['No'])===String(no)}); if(!it) return;
+    EDITING=String(no);
+    const sc=schemaOf(it), raw=String(it['보고내용']||'');
+    const card=$('c'+no); card.classList.add('editing');
+    let f='';
+    if(sc.type==='table'||sc.type==='links'){
+      const cols=sc.type==='links'?['자료명','링크 (https://…)']:sc.cols;
+      let rows=textToTbl(sc.type==='links'?['자료명','링크']:cols, raw);
+      if(!rows){ rows=raw.trim()? [[raw.trim()].concat(cols.slice(1).map(function(){return ''}))] : (sc.type==='links'?[['','']]:defaultRows(sc, CUR.month)); }
+      f='<div class="etbl" data-cols="'+cols.length+'"><table><thead><tr>'+cols.map(function(c){return '<th>'+esc(c)+'</th>'}).join('')+'<th></th></tr></thead><tbody>'+
+        rows.map(rowInputs).join('')+'</tbody></table><button type="button" class="addrow">+ 행 추가</button></div>';
+    } else if(sc.type==='list'){
+      let items=textToList(raw); while(items.length<(sc.n||3)) items.push('');
+      f='<div class="elist">'+items.map(listInput).join('')+'<button type="button" class="additem">+ 항목 추가</button></div>';
+    } else {
+      f='<textarea class="etext" rows="6" placeholder="'+esc(sc.ph||'')+'">'+esc(raw)+'</textarea>';
+    }
+    card.innerHTML='<div class="sm">'+esc(it['소제목'])+'</div><div class="hd"><span class="nm">'+esc(it['세부항목'])+'</span><span class="tag">'+esc(it['작성부서'])+'</span><span class="tag edit">편집 중</span></div>'+
+      '<div class="guide">작성 가이드 · '+esc(it['작성가이드'])+'</div>'+
+      (String(it['자동데이터']||'').trim()?'<div class="auto"><b>자동 집계 · 인사 DB 연동 (수정 불가)</b>'+esc(it['자동데이터'])+'</div>':'')+
+      '<div class="efield">'+f+'</div>'+
+      '<div class="erow"><label>평가<select class="eeval">'+['','양호','주의','미흡'].map(function(v){return '<option'+(String(it['평가']||'')===v?' selected':'')+' value="'+v+'">'+(v||'없음')+'</option>'}).join('')+'</select></label>'+
+      '<label class="grow">첨부 링크<input class="eurl" placeholder="https://drive.google.com/…" value="'+esc(it['첨부링크']||'')+'"></label></div>'+
+      '<div class="eact"><button type="button" class="cancel">취소</button><button type="button" class="save">저장</button></div>';
+    const tb=card.querySelector('.etbl tbody');
+    card.addEventListener('click',function h(e){
+      if(e.target.closest('.addrow')){ const n=Number(card.querySelector('.etbl').getAttribute('data-cols')); const a=[]; for(let i=0;i<n;i++) a.push(''); tb.insertAdjacentHTML('beforeend',rowInputs(a)); }
+      else if(e.target.closest('.delrow')){ e.target.closest('tr').remove(); }
+      else if(e.target.closest('.additem')){ e.target.closest('.additem').insertAdjacentHTML('beforebegin',listInput('')); }
+      else if(e.target.closest('.delitem')){ e.target.closest('.li').remove(); }
+      else if(e.target.closest('.cancel')){ card.removeEventListener('click',h); EDITING=null; card.classList.remove('editing'); card.innerHTML=cardView(it); }
+      else if(e.target.closest('.save')){ save(it, sc, card, h); }
+    });
+    const first=card.querySelector('input,textarea'); if(first) first.focus();
+  }
+  function rowInputs(r){ return '<tr>'+r.map(function(c){return '<td><input value="'+esc(c)+'"></td>'}).join('')+'<td><button type="button" class="delrow" title="행 삭제">×</button></td></tr>'; }
+  function listInput(v){ return '<div class="li"><span>•</span><input value="'+esc(v)+'"><button type="button" class="delitem" title="삭제">×</button></div>'; }
+
+  function save(it, sc, card, handler){
+    let text='';
+    if(sc.type==='table'||sc.type==='links'){
+      const cols=sc.type==='links'?['자료명','링크']:sc.cols;
+      const rows=[].map.call(card.querySelectorAll('.etbl tbody tr'),function(tr){return [].map.call(tr.querySelectorAll('input'),function(i){return i.value})});
+      if(sc.type==='links'){ const bad=rows.filter(function(r){return r[1].trim() && !safeUrl(r[1])}); if(bad.length){ toast('링크는 https:// 로 시작해야 합니다.', true); return; } }
+      text=tblToText(cols, rows);
+    } else if(sc.type==='list'){
+      text=listToText([].map.call(card.querySelectorAll('.elist input'),function(i){return i.value}));
+    } else text=card.querySelector('.etext').value;
+    const url=card.querySelector('.eurl').value.trim();
+    if(url && !safeUrl(url)){ toast('첨부 링크는 https:// 로 시작해야 합니다.', true); return; }
+    const btn=card.querySelector('.save'); btn.disabled=true; btn.textContent='저장 중…';
+    call('saveItem',{token:TOKEN, month:CUR.month, no:it['No'], fields:{'보고내용':text,'평가':card.querySelector('.eeval').value,'첨부링크':url}}).then(function(r){
+      if(!r.ok){ btn.disabled=false; btn.textContent='저장'; if(r.expired){ toast('세션이 만료되었습니다. 다시 로그인하세요.', true); } else toast(r.msg||'저장 실패', true); return; }
+      card.removeEventListener('click',handler); EDITING=null; toast('저장했습니다. 시트에 반영되었습니다.'); load(CUR.month, true);
+    }).catch(function(){ btn.disabled=false; btn.textContent='저장'; toast('서버 연결 오류로 저장하지 못했습니다.', true); });
+  }
+
+  /* ── KPI 표 ── */
+  function kpiView(k){
     if(!k.length) return '';
     const v=function(x){x=String(x||'').trim();return x?esc(x):'<span class="na">–</span>'};
-    let h='<div class="tblwrap"><table><thead><tr><th>부문</th><th>지표</th><th>단위</th><th>계획</th><th>실적</th><th>전월</th><th>전년동월</th><th>평가</th><th>비고</th></tr></thead><tbody>';
+    let h='<div class="kpihd"><span>부문별 핵심 지표</span>'+(canEdit()?'<button class="ebtn" data-kpiedit="1">KPI 수정</button>':'')+'</div>'+
+      '<div class="tblwrap"><table><thead><tr><th>부문</th><th>지표</th><th>단위</th><th>계획</th><th>실적</th><th>전월</th><th>전년동월</th><th>평가</th><th>비고</th></tr></thead><tbody>';
     let prev='';
     k.forEach(function(x){
       const grp=x['부문']===prev?'':esc(x['부문']); prev=x['부문'];
       h+='<tr><td class="grp">'+grp+'</td><td class="l">'+esc(x['지표'])+'</td><td>'+esc(x['단위'])+'</td><td class="n">'+v(x['계획'])+'</td><td class="n">'+v(x['실적'])+
-         '</td><td class="n">'+v(x['전월'])+'</td><td class="n">'+v(x['전년동월'])+'</td><td>'+(badge(x['평가'])||'<span class="na">–</span>')+'</td><td class="l">'+v(x['비고'])+'</td></tr>';
+         '</td><td class="n">'+v(x['전월'])+'</td><td class="n">'+v(x['전년동월'])+'</td><td>'+(badge(x['평가'])||'<span class="na">–</span>')+'</td><td class="l">'+(String(x['비고']).trim()==='자동'?'<span class="tag autotag">자동</span>':v(x['비고']))+'</td></tr>';
     });
     return h+'</tbody></table></div>';
+  }
+  function openKpiEditor(){
+    if(EDITING){ toast('먼저 편집 중인 항목을 저장하거나 취소하세요.', true); return; }
+    EDITING='kpi';
+    const box=$('kpiBox'), k=CUR.kpi;
+    const inp=function(x,key,lock){ return lock?'<td class="n lock" title="인사 DB 자동 연동 값">'+esc(x[key]||'–')+'</td>':'<td><input class="n" inputmode="decimal" data-k="'+key+'" value="'+esc(x[key]||'')+'"></td>'; };
+    let h='<div class="kpihd"><span>부문별 핵심 지표 <span class="tag edit">편집 중</span></span></div><div class="tblwrap ekpi"><table><thead><tr><th>부문</th><th>지표</th><th>단위</th><th>계획</th><th>실적</th><th>전월</th><th>전년동월</th><th>평가</th><th>비고</th></tr></thead><tbody>';
+    k.forEach(function(x,i){
+      const auto=String(x['비고']).trim()==='자동';
+      h+='<tr data-i="'+i+'"><td class="grp">'+esc(x['부문'])+'</td><td class="l">'+esc(x['지표'])+'</td><td>'+esc(x['단위'])+'</td>'+
+        inp(x,'계획',false)+inp(x,'실적',auto)+inp(x,'전월',auto)+inp(x,'전년동월',auto)+
+        '<td><select data-k="평가">'+['','양호','주의','미흡'].map(function(v){return '<option'+(String(x['평가']||'')===v?' selected':'')+' value="'+v+'">'+(v||'–')+'</option>'}).join('')+'</select></td>'+
+        (auto?'<td><span class="tag autotag">자동</span></td>':'<td><input data-k="비고" value="'+esc(x['비고']||'')+'"></td>')+'</tr>';
+    });
+    h+='</tbody></table></div><div class="eact"><span class="hint">숫자만 입력 (쉼표 가능). 「자동」 행의 실적·전월·전년동월은 인사 DB에서 매일 갱신됩니다.</span><button type="button" class="cancel">취소</button><button type="button" class="save">저장</button></div>';
+    box.innerHTML=h; box.classList.add('editing');
+    box.onclick=function(e){
+      if(e.target.closest('.cancel')){ EDITING=null; box.onclick=null; box.classList.remove('editing'); box.innerHTML=kpiView(CUR.kpi); }
+      else if(e.target.closest('.save')){
+        const rows=[], bad=[];
+        [].forEach.call(box.querySelectorAll('tbody tr'),function(tr){
+          const x=k[Number(tr.getAttribute('data-i'))], o={'부문':x['부문'],'지표':x['지표']};
+          [].forEach.call(tr.querySelectorAll('[data-k]'),function(el){ const key=el.getAttribute('data-k'); o[key]=el.value;
+            if(['계획','실적','전월','전년동월'].indexOf(key)>=0 && el.value.trim() && isNaN(Number(el.value.replace(/,/g,'')))) bad.push(x['지표']+' '+key); });
+          rows.push(o);
+        });
+        if(bad.length){ toast('숫자가 아닌 값: '+bad[0], true); return; }
+        const btn=box.querySelector('.save'); btn.disabled=true; btn.textContent='저장 중…';
+        call('saveKpi',{token:TOKEN, month:CUR.month, rows:rows}).then(function(r){
+          if(!r.ok){ btn.disabled=false; btn.textContent='저장'; toast(r.msg||'저장 실패', true); return; }
+          EDITING=null; box.onclick=null; toast('KPI를 저장했습니다.'); load(CUR.month, true);
+        }).catch(function(){ btn.disabled=false; btn.textContent='저장'; toast('서버 연결 오류로 저장하지 못했습니다.', true); });
+      }
+    };
   }
 
   (function(){
@@ -274,5 +543,6 @@
     call('resume',{token:t}).then(function(r){ if(r.ok){ TOKEN=t; enter(r.user,r.months); } else store.set(null); }).catch(function(){});
   })();
 </script>
+
 </body>
 </html>
