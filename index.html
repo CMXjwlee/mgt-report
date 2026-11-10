@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>경영지원팀 월간 보고 | CONTROMAX</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --navy:#0b2340; --navy2:#123a6b; --accent:#2f6fd6; --ink:#121a26; --sub:#4d5a6b; --mute:#8592a3;
+    --line:#dfe4ea; --bg:#f3f5f8; --card:#fff;
+    --good:#187a43; --goodbg:#e3f3ea; --warn:#a35f00; --warnbg:#fcefd9; --bad:#b3261e; --badbg:#fbe5e3;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:Pretendard,-apple-system,'Malgun Gothic',sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+  .hidden{display:none!important}
+
+  /* ── 첫 화면(로그인) ── */
+  #login{min-height:100vh;display:grid;grid-template-columns:1.15fr 1fr}
+  .brand{position:relative;overflow:hidden;background:var(--navy);color:#fff;padding:56px 64px;display:flex;flex-direction:column;justify-content:space-between}
+  .brand::before{content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(900px 500px at 110% 110%, rgba(47,111,214,.45), transparent 60%),
+      linear-gradient(transparent 0 0);
+  }
+  .brand::after{content:"";position:absolute;inset:0;opacity:.07;
+    background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:48px 48px}
+  .brand>*{position:relative;z-index:1}
+  .wordmark{font-weight:800;letter-spacing:.22em;font-size:15px}
+  .wordmark small{display:block;letter-spacing:.04em;font-weight:500;font-size:12px;opacity:.6;margin-top:4px}
+  .hero .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.14em;color:#9cc0ff;margin-bottom:18px}
+  .hero h1{font-size:46px;line-height:1.22;margin:0 0 18px;font-weight:800;letter-spacing:-.02em}
+  .hero p{margin:0;font-size:16px;color:rgba(255,255,255,.72);max-width:440px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
+  .chips span{font-size:13px;padding:6px 12px;border:1px solid rgba(255,255,255,.22);border-radius:999px;color:rgba(255,255,255,.85)}
+  .bfoot{font-size:12px;color:rgba(255,255,255,.45)}
+
+  .formside{display:flex;align-items:center;justify-content:center;padding:48px 24px;background:#fff}
+  .lform{width:100%;max-width:380px}
+  .lform .conf{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--bad);background:var(--badbg);padding:4px 10px;border-radius:6px;margin-bottom:22px}
+  .lform h2{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  .lform .desc{color:var(--sub);margin:0 0 32px;font-size:14px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--sub);margin-bottom:8px}
+  .field .box{position:relative}
+  .field input{width:100%;height:52px;padding:0 16px;border:1.5px solid var(--line);border-radius:10px;outline:none;font-size:16px;background:#fbfcfd;transition:border-color .15s, box-shadow .15s}
+  .field input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 4px rgba(47,111,214,.12)}
+  .eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--mute);font-size:13px;cursor:pointer;padding:6px}
+  .btn{width:100%;height:54px;border:0;border-radius:10px;background:var(--navy);color:#fff;font-weight:700;font-size:16px;cursor:pointer;margin-top:10px;transition:background .15s}
+  .btn:hover{background:var(--navy2)} .btn:disabled{opacity:.6;cursor:default}
+  .err{color:var(--bad);font-size:14px;margin-top:14px;min-height:22px}
+  .help{margin-top:28px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
+
+  /* ── 보고 화면 ── */
+  header{position:sticky;top:0;z-index:10;background:var(--navy);color:#fff}
+  .hbar{max-width:1440px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:0 32px;height:64px}
+  .hbar .wm{font-weight:800;letter-spacing:.2em;font-size:14px}
+  .hbar .sep{width:1px;height:18px;background:rgba(255,255,255,.25)}
+  .hbar .tt{font-weight:600;font-size:16px}
+  .hbar .sp{flex:1}
+  .hbar select{height:38px;padding:0 12px;border-radius:8px;border:0;font-weight:600;color:var(--ink)}
+  .hbar .who{font-size:14px;opacity:.85}
+  .hbar button{height:38px;padding:0 14px;border-radius:8px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;cursor:pointer}
+  .layout{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:250px 1fr;gap:32px;padding:28px 32px 80px}
+  nav{position:sticky;top:88px;align-self:start;max-height:calc(100vh - 110px);overflow:auto}
+  nav a{display:block;padding:9px 14px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:14px}
+  nav a.l1{font-weight:700;margin-top:12px}
+  nav a.l2{padding-left:26px;color:var(--sub)}
+  nav a:hover{background:#e6ebf2}
+  main{min-width:0}
+  .cover{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .cover .meta{color:var(--sub);font-size:14px}
+  .cover h2{margin:4px 0 0;font-size:28px;letter-spacing:-.01em}
+  .prog{min-width:240px}
+  .prog .lbl{display:flex;justify-content:space-between;font-size:14px;color:var(--sub);margin-bottom:8px}
+  .prog .lbl b{color:var(--ink)}
+  .bar{height:8px;background:#e8ecf1;border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+  section.big{margin-top:40px}
+  section.big>h3{font-size:21px;margin:0 0 16px;padding-bottom:10px;border-bottom:2px solid var(--navy);letter-spacing:-.01em}
+  h4.mid{font-size:17px;margin:26px 0 12px;color:var(--navy2)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
+  .card .sm{font-size:13px;color:var(--mute);margin-bottom:6px}
+  .card .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card .nm{font-weight:700;font-size:16px}
+  .card .body{margin-top:10px;white-space:pre-wrap;font-size:15px}
+  .card .empty{margin-top:10px;font-size:14px;color:var(--mute)}
+  .card .guide{margin-top:6px;font-size:13px;color:var(--mute);background:#f6f8fa;border-radius:8px;padding:8px 12px}
+  .card a.att{display:inline-block;margin-top:10px;font-size:14px;color:var(--accent);font-weight:600;text-decoration:none}
+  .tag{font-size:12px;padding:3px 9px;border-radius:999px;background:#eef1f5;color:var(--sub)}
+  .b{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+  .b.good{background:var(--goodbg);color:var(--good)} .b.warn{background:var(--warnbg);color:var(--warn)} .b.bad{background:var(--badbg);color:var(--bad)}
+  .tblwrap{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:15px;min-width:820px}
+  th,td{padding:12px 16px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+  th{background:#f2f5f9;font-weight:700;font-size:14px;color:var(--sub)}
+  tr:last-child td{border-bottom:0}
+  td.l{text-align:left} td.n{text-align:right;font-variant-numeric:tabular-nums}
+  td.grp{font-weight:700;color:var(--navy2)}
+  .na{color:#b6bec9}
+  .loading{padding:80px;text-align:center;color:var(--sub)}
+
+  @media (max-width:960px){
+    #login{grid-template-columns:1fr}
+    .brand{padding:36px 28px;min-height:auto}
+    .hero h1{font-size:32px}
+    .bfoot{display:none}
+    .layout{grid-template-columns:1fr;padding:20px 16px 60px}
+    nav{display:none}
+    .hbar{padding:0 16px;gap:10px} .hbar .wm,.hbar .sep,.hbar .who{display:none} .hbar .tt{font-size:14px;white-space:nowrap} .hbar button{white-space:nowrap;padding:0 10px} .hbar select{padding:0 8px}
+    .brand{gap:28px}
+    .grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- 첫 화면 -->
+<div id="login">
+  <div class="brand">
+    <div class="wordmark">CONTROMAX<small>㈜컨트로맥스 · 경영지원팀</small></div>
+    <div class="hero">
+      <div class="eyebrow">MONTHLY MANAGEMENT REPORT</div>
+      <h1>경영지원팀<br>월간 경영 보고</h1>
+      <p>회계 · 자금 · 인사 · 총무 부문의 월간 실적과 주요 이슈, 의사결정 요청 사항을 한 곳에서 확인합니다.</p>
+      <div class="chips"><span>경영 요약</span><span>직무별 보고</span><span>종합 보고</span><span>Appendix</span></div>
+    </div>
+    <div class="bfoot">© CONTROMAX Co., Ltd. 본 시스템의 정보는 대외비입니다.</div>
+  </div>
+
+  <div class="formside">
+    <form class="lform" id="lform" autocomplete="off">
+      <div class="conf">● 대외비 · 권한자 전용</div>
+      <h2>로그인</h2>
+      <p class="desc">부여받은 사번과 비밀번호를 입력하세요.</p>
+      <div class="field"><label for="sabun">사번</label><div class="box"><input id="sabun" required autocomplete="username"></div></div>
+      <div class="field"><label for="pw">비밀번호</label><div class="box"><input id="pw" type="password" required autocomplete="current-password"><button type="button" class="eye" id="eye">표시</button></div></div>
+      <button class="btn" id="lbtn" type="submit">로그인</button>
+      <div class="err" id="lerr"></div>
+      <div class="help">계정 발급·비밀번호 초기화는 경영지원팀 인사총무 담당자에게 문의하세요.</div>
+    </form>
+  </div>
+</div>
+
+<!-- 보고 화면 -->
+<div id="app" class="hidden">
+  <header><div class="hbar">
+    <span class="wm">CONTROMAX</span><span class="sep"></span><span class="tt">경영지원팀 월간 보고</span>
+    <span class="sp"></span>
+    <select id="month" aria-label="보고월"></select>
+    <span class="who" id="who"></span>
+    <button id="out">로그아웃</button>
+  </div></header>
+  <div class="layout">
+    <nav id="nav"></nav>
+    <main id="main"><div class="loading">불러오는 중…</div></main>
+  </div>
+</div>
+
+<script>
+  /* Apps Script 웹앱 주소 (로그인·데이터 API) */
+  const API = 'https://script.google.com/macros/s/AKfycbybGdLGwlHWiLU8QL4dT2jyIBABrCjUX4MNei2dWVbtd2ChVbz2Vy6IQDpWnjOVvX_3iQ/exec';
+
+  async function call(action, payload){
+    if (window.MOCK_API) return window.MOCK_API(action, payload||{});
+    const r = await fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+                                 body: JSON.stringify(Object.assign({action:action}, payload||{})) });
+    if (!r.ok) throw new Error('서버 응답 오류 ('+r.status+')');
+    return r.json();
+  }
+  const store={get:function(){try{return sessionStorage.getItem('mgt_t')}catch(e){return null}},
+               set:function(v){try{v?sessionStorage.setItem('mgt_t',v):sessionStorage.removeItem('mgt_t')}catch(e){}}};
+  let TOKEN=null;
+  const $=function(id){return document.getElementById(id)};
+  const esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+  const badge=function(v){ v=String(v||'').trim(); if(!v) return '';
+    const c=v==='양호'?'good':v==='주의'?'warn':v==='미흡'?'bad':''; return '<span class="b '+c+'">'+esc(v)+'</span>'; };
+  const safeUrl=function(u){ u=String(u||'').trim(); return /^https?:\/\//i.test(u)?u:''; };
+
+  $('eye').addEventListener('click',function(){ const p=$('pw'); const on=p.type==='password'; p.type=on?'text':'password'; this.textContent=on?'숨김':'표시'; });
+
+  $('lform').addEventListener('submit',function(e){
+    e.preventDefault();
+    $('lerr').textContent=''; $('lbtn').disabled=true; $('lbtn').textContent='확인 중…';
+    call('login',{sabun:$('sabun').value,password:$('pw').value}).then(function(r){
+      if(!r.ok){ $('lerr').textContent=r.msg||'로그인에 실패했습니다.'; $('pw').value=''; return; }
+      TOKEN=r.token; store.set(TOKEN); $('pw').value=''; enter(r.user,r.months);
+    }).catch(function(err){ $('lerr').textContent='서버에 연결할 수 없습니다. 잠시 후 다시 시도하세요.'; console.error(err); })
+      .finally(function(){ $('lbtn').disabled=false; $('lbtn').textContent='로그인'; });
+  });
+
+  $('out').addEventListener('click',function(){
+    call('logout',{token:TOKEN}).catch(function(){}).finally(function(){ TOKEN=null; store.set(null); show(false); });
+  });
+  $('month').addEventListener('change',function(){ load(this.value); });
+
+  function show(on){ $('login').classList.toggle('hidden',on); $('app').classList.toggle('hidden',!on); window.scrollTo(0,0); }
+
+  function enter(user,months){
+    $('who').textContent=user.name+' ('+user.sabun+')';
+    $('month').innerHTML=months.map(function(m){return '<option value="'+esc(m)+'">'+esc(m.replace('-','년 '))+'월</option>'}).join('');
+    show(true);
+    if(months.length) load(months[0]); else $('main').innerHTML='<div class="loading">등록된 보고월이 없습니다.</div>';
+  }
+
+  function load(month){
+    $('main').innerHTML='<div class="loading">불러오는 중…</div>';
+    call('getReport',{token:TOKEN,month:month}).then(function(r){
+      if(!r.ok){ store.set(null); show(false); $('lerr').textContent='세션이 만료되었습니다. 다시 로그인하세요.'; return; }
+      render(r);
+    }).catch(function(){ $('main').innerHTML='<div class="loading">데이터를 불러오지 못했습니다.</div>'; });
+  }
+
+  function render(r){
+    const items=r.items, kpi=r.kpi;
+    const done=items.filter(function(x){return String(x['보고내용']).trim()}).length;
+    const pct=items.length?Math.round(done/items.length*100):0;
+    const ym=r.month.split('-');
+    let html='<div class="cover"><div><div class="meta">㈜컨트로맥스 · 경영지원팀 · '+esc(ym[0])+'년</div><h2>월간 경영 보고 ('+Number(ym[1])+'월)</h2></div>'+
+      '<div class="prog"><div class="lbl"><span>작성 현황</span><span><b>'+done+'</b> / '+items.length+' 항목</span></div><div class="bar"><i style="width:'+pct+'%"></i></div></div></div>';
+    let nav='';
+    const groups=[];
+    items.forEach(function(it){
+      let g=groups.find(function(x){return x.t===it['대제목']}); if(!g){g={t:it['대제목'],mids:[]};groups.push(g);}
+      let m=g.mids.find(function(x){return x.t===it['중제목']}); if(!m){m={t:it['중제목'],list:[]};g.mids.push(m);}
+      m.list.push(it);
+    });
+    groups.forEach(function(g,gi){
+      const gid='g'+gi;
+      nav+='<a class="l1" href="#'+gid+'">'+esc(g.t)+'</a>';
+      html+='<section class="big" id="'+gid+'"><h3>'+esc(g.t)+'</h3>';
+      if(gi===0) html+=kpiTable(kpi);
+      g.mids.forEach(function(m,mi){
+        const mid=gid+'_'+mi;
+        nav+='<a class="l2" href="#'+mid+'">'+esc(m.t)+'</a>';
+        html+='<h4 class="mid" id="'+mid+'">'+esc(m.t)+'</h4><div class="grid">';
+        m.list.forEach(function(it){
+          const body=String(it['보고내용']).trim(), url=safeUrl(it['첨부링크']);
+          html+='<div class="card"><div class="sm">'+esc(it['소제목'])+'</div>'+
+            '<div class="hd"><span class="nm">'+esc(it['세부항목'])+'</span><span class="tag">'+esc(it['작성부서'])+'</span>'+badge(it['평가'])+'</div>'+
+            (body?'<div class="body">'+esc(body)+'</div>':'<div class="empty">미작성</div><div class="guide">작성 가이드 · '+esc(it['작성가이드'])+'</div>')+
+            (url?'<a class="att" target="_blank" rel="noopener" href="'+esc(url)+'">첨부 자료 열기 →</a>':'')+
+            '</div>';
+        });
+        html+='</div>';
+      });
+      html+='</section>';
+    });
+    $('nav').innerHTML=nav; $('main').innerHTML=html;
+  }
+
+  function kpiTable(k){
+    if(!k.length) return '';
+    const v=function(x){x=String(x||'').trim();return x?esc(x):'<span class="na">–</span>'};
+    let h='<div class="tblwrap"><table><thead><tr><th>부문</th><th>지표</th><th>단위</th><th>계획</th><th>실적</th><th>전월</th><th>전년동월</th><th>평가</th><th>비고</th></tr></thead><tbody>';
+    let prev='';
+    k.forEach(function(x){
+      const grp=x['부문']===prev?'':esc(x['부문']); prev=x['부문'];
+      h+='<tr><td class="grp">'+grp+'</td><td class="l">'+esc(x['지표'])+'</td><td>'+esc(x['단위'])+'</td><td class="n">'+v(x['계획'])+'</td><td class="n">'+v(x['실적'])+
+         '</td><td class="n">'+v(x['전월'])+'</td><td class="n">'+v(x['전년동월'])+'</td><td>'+(badge(x['평가'])||'<span class="na">–</span>')+'</td><td class="l">'+v(x['비고'])+'</td></tr>';
+    });
+    return h+'</tbody></table></div>';
+  }
+
+  (function(){
+    const t=store.get(); if(!t) return;
+    call('resume',{token:t}).then(function(r){ if(r.ok){ TOKEN=t; enter(r.user,r.months); } else store.set(null); }).catch(function(){});
+  })();
+</script>
+</body>
+</html>
