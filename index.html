@@ -152,6 +152,60 @@
   .dash .wip i{background:#ffc93c;box-shadow:0 0 0 3px rgba(255,201,60,.22)}
   .dash .off i{background:#ff5a52;box-shadow:0 0 0 3px rgba(255,90,82,.22)}
   .hbar #newm{border-style:dashed}
+  .mdash{display:none}
+
+  /* ── 총무 대시보드 ── */
+  .gahd{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .gahd h2{margin:0;font-size:26px;letter-spacing:-.01em} .gahd .meta{color:var(--sub);font-size:14px}
+  .gahd .back{color:var(--accent);font-weight:600;text-decoration:none;font-size:14px}
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
+  .tile{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .tile .k{font-size:13px;color:var(--sub);font-weight:600}
+  .tile .v{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+  .tile .v small{font-size:14px;font-weight:600;color:var(--sub);margin-left:3px}
+  .tile .s{font-size:13px;color:var(--mute);margin-top:4px}
+  .tile.alert{border-color:#f3c1bd;background:#fffafa} .tile.alert .v{color:var(--bad)}
+  .sechd{display:flex;align-items:center;gap:10px;margin:0 0 14px;padding-bottom:10px;border-bottom:2px solid var(--navy);flex-wrap:wrap}
+  .sechd h3{margin:0;font-size:21px} .sechd .cnt{color:var(--mute);font-size:14px}
+  .sechd .add{height:34px;padding:0 14px;border-radius:8px;border:0;background:var(--navy);color:#fff;font-weight:700;font-size:13px;cursor:pointer}
+  .sechd .cnt+.add{margin-left:auto}
+  .bars{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:14px}
+  .brow{display:grid;grid-template-columns:110px 1fr 170px;gap:12px;align-items:center;padding:5px 0;font-size:14px}
+  .brow .tr{height:10px;background:#eef1f5;border-radius:99px;overflow:hidden} .brow .tr i{display:block;height:100%;background:var(--accent);border-radius:99px}
+  .brow .am{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .gtbl{font-size:14px;min-width:0} .gtbl td,.gtbl th{white-space:nowrap;padding:11px 12px} .gtbl td.l{white-space:normal;min-width:170px;text-align:left}
+  .gtbl tr.dim td{color:var(--mute)} .gtbl tr.click{cursor:pointer} .gtbl tr.click:hover td{background:#f7f9fc}
+  .gtbl a{color:var(--accent);font-weight:600;text-decoration:none}
+  .dd{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:#eef1f5;color:var(--sub);margin-left:6px}
+  .dd.r{background:var(--badbg);color:var(--bad)} .dd.y{background:var(--warnbg);color:var(--warn)} .dd.g{background:var(--goodbg);color:var(--good)}
+  .gfilter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .gfilter button{height:32px;padding:0 13px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:13px;font-weight:600;color:var(--sub);cursor:pointer}
+  .gfilter button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,1fr);gap:12px;overflow-x:auto;padding-bottom:6px}
+  .kcol{background:#e9edf3;border-radius:12px;padding:10px;min-height:120px}
+  .kcol h5{margin:2px 4px 10px;font-size:14px;display:flex;justify-content:space-between;color:var(--navy2)} .kcol h5 span{color:var(--mute);font-weight:600}
+  .gcard{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+  .gcard:hover{border-color:var(--accent)}
+  .gcard .t{font-weight:700;font-size:14px;line-height:1.4;margin:6px 0 2px} .gcard .o{font-size:12px;color:var(--mute)}
+  .gcard .m{margin-top:8px;font-size:12px;color:var(--sub);display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+  .gcard .pb{height:6px;background:#eef1f5;border-radius:99px;overflow:hidden;margin-top:4px} .gcard .pb i{display:block;height:100%;background:var(--good)}
+  .gcard .w{margin-top:8px;font-size:12px;color:var(--sub);line-height:1.8}
+  .tag.t1{background:#e6efff;color:#1f5bc4} .tag.t2{background:#efe7fb;color:#6b3fb5} .tag.t3{background:#fdf0e1;color:#a35f00} .tag.t4{background:#eef1f5;color:var(--sub)}
+  .closed{margin-top:12px;font-size:13px;color:var(--mute)} .closed summary{cursor:pointer;font-weight:600}
+  .empty2{padding:26px;text-align:center;color:var(--mute);background:#fff;border:1px dashed #cdd5df;border-radius:12px;font-size:14px}
+  .modal{position:fixed;inset:0;background:rgba(11,35,64,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:40;overflow:auto}
+  .mbox{background:#fff;border-radius:14px;width:100%;max-width:720px;padding:24px 26px}
+  .mbox h3{margin:0 0 16px;font-size:19px}
+  .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+  .mgrid label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600;color:var(--sub)}
+  .mgrid label.full{grid-column:1/-1}
+  .mgrid input,.mgrid select{height:40px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;font:inherit;font-size:14px;background:#fff;outline:none;color:var(--ink)}
+  .mgrid input:focus,.mgrid select:focus{border-color:var(--accent)}
+  .mgrid input:disabled,.mgrid select:disabled{background:#f6f8fa;color:var(--ink)}
+  .mgrid .req::after{content:" *";color:var(--bad)}
+  .msub{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)} .msub h4{margin:0 0 8px;font-size:15px;display:flex;align-items:center}
+  .eact .del{border:1px solid #f0c4c0;background:#fff;color:var(--bad);margin-right:auto}
+  @media (max-width:960px){ .tiles{grid-template-columns:1fr 1fr} .mgrid{grid-template-columns:1fr} .brow{grid-template-columns:72px 1fr 120px;font-size:13px} .tile .v{font-size:22px} }
 
   @media (max-width:960px){
     #login{grid-template-columns:1fr}
@@ -162,6 +216,10 @@
     nav{display:none}
     .hbar{padding:0 16px;gap:10px} .hbar .wm,.hbar .sep,.hbar .who,.dash,.hbar #newm{display:none!important} .hbar .tt{font-size:14px;white-space:nowrap} .hbar button{white-space:nowrap;padding:0 10px} .hbar select{padding:0 8px}
     .brand{gap:28px}
+    .mdash{display:flex;gap:6px;overflow-x:auto;padding:0 16px 10px;position:static;max-height:none}
+    .mdash a,.mdash span.d{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:8px;border:1px solid rgba(255,255,255,.22);color:#fff;font-size:12px;font-weight:600;text-decoration:none;white-space:nowrap;background:rgba(255,255,255,.06)}
+    .mdash span.d{color:rgba(255,255,255,.7)} .mdash i{width:7px;height:7px;border-radius:50%}
+    .mdash .on i{background:#2fd57a} .mdash .wip i{background:#ffc93c} .mdash .off i{background:#ff5a52}
     .grid{grid-template-columns:1fr}
   }
 </style>
@@ -196,6 +254,7 @@
 </div>
 
 <div id="toast" class="toast"></div>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true"></div>
 
 <!-- 보고 화면 -->
 <div id="app" class="hidden">
@@ -207,7 +266,7 @@
     <button id="newm" class="hidden" title="최근 보고월의 목차를 복사해 새 보고월을 만듭니다">+ 새 보고월</button>
     <span class="who" id="who"></span>
     <button id="out">로그아웃</button>
-  </div></header>
+  </div><nav class="mdash" id="mdash" aria-label="분야별 대시보드"></nav></header>
   <div class="layout">
     <nav id="nav"></nav>
     <main id="main"><div class="loading">불러오는 중…</div></main>
@@ -248,6 +307,7 @@
     27: { type:'table', cols:['점검 항목','일자','결과','조치'] },
     28: { type:'list',  n:3, ph:'사내 행사 / 거래처 대응' },
     29: { type:'table', cols:['이슈','원인','영향','대응 방안'] },
+    36: { type:'text',  ph:'지원사업 관련 코멘트 (선정·탈락 결과, 신규 신청 계획 등)' },
     30: { type:'table', cols:['안건','주관','현황','검토안','실무 의견'] },
     31: { type:'table', cols:['부서','추진 과제','일정','담당','비고'] },
     32: { type:'links' }, 33: { type:'links' }, 34: { type:'links' }, 35: { type:'links' }
@@ -293,7 +353,7 @@
   }
   const store={get:function(){try{return sessionStorage.getItem('mgt_t')}catch(e){return null}},
                set:function(v){try{v?sessionStorage.setItem('mgt_t',v):sessionStorage.removeItem('mgt_t')}catch(e){}}};
-  let TOKEN=null, ME=null, CUR=null, EDITING=null;
+  let TOKEN=null, ME=null, CUR=null, EDITING=null, MODE='report', GAD=null, GAF='전체';
   const $=function(id){return document.getElementById(id)};
   const esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
   const badge=function(v){ v=String(v||'').trim(); if(!v) return '';
@@ -328,9 +388,11 @@
     const L=list||[], cls={'운영':'on','작성중':'wip','없음':'off'}, tip={'운영':'대시보드 열기','작성중':'대시보드 작성 중','없음':'대시보드 없음'};
     $('dash').innerHTML=L.map(function(d){
       const c=cls[d.status]||'off', t=esc(d.name), title=esc(tip[d.status]+(d.note?' · '+d.note:''));
+      if(d.url && /#ga$/.test(d.url)) return '<a class="'+c+'" href="#ga" title="'+title+'"><i></i>'+t+'</a>';
       return d.url ? '<a class="'+c+'" href="'+esc(d.url)+'" target="_blank" rel="noopener" title="'+title+'"><i></i>'+t+'</a>'
                    : '<span class="d '+c+'" title="'+title+'"><i></i>'+t+'</span>';
     }).join('');
+    $('mdash').innerHTML=$('dash').innerHTML;
   }
   function fillMonths(months, sel){
     $('month').innerHTML=months.map(function(m){return '<option value="'+esc(m)+'">'+esc(m.replace('-','년 '))+'월</option>'}).join('');
@@ -351,11 +413,12 @@
   });
 
   function enter(user,months){
-    ME=user;
+    ME=user; MODE='report'; $('month').classList.remove('hidden');
     $('newm').classList.toggle('hidden',!canEdit());
     $('who').textContent=user.name+' ('+user.sabun+')'+(canEdit()?' · 편집':'');
     fillMonths(months);
     show(true);
+    if(location.hash==='#ga'){ showGa(); if(months.length) load(months[0]); return; }
     if(months.length) load(months[0]); else $('main').innerHTML='<div class="loading">등록된 보고월이 없습니다.</div>';
   }
 
@@ -366,7 +429,7 @@
       if(!r.ok){ store.set(null); show(false); $('lerr').textContent='세션이 만료되었습니다. 다시 로그인하세요.'; return; }
       const ORD={'자금':1,'회계':2,'인사':3,'총무':4};
       r.kpi=(r.kpi||[]).map(function(x,i){return [x,i]}).sort(function(a,b){ return ((ORD[a[0]['부문']]||9)-(ORD[b[0]['부문']]||9)) || (a[1]-b[1]); }).map(function(p){return p[0]});
-      CUR=r; EDITING=null; renderDash(r.dash); render(); if(keepScroll) window.scrollTo(0,y);
+      CUR=r; if(MODE==='ga') return; EDITING=null; renderDash(r.dash); render(); if(keepScroll) window.scrollTo(0,y);
     }).catch(function(){ $('main').innerHTML='<div class="loading">데이터를 불러오지 못했습니다.</div>'; });
   }
 
@@ -419,7 +482,7 @@
 
   function autoBox(it, locked){
     const auto=String(it['자동데이터']||'').trim(); if(!auto) return '';
-    const src=String(it['No'])==='21'?'나인하이어 연동':'인사 DB 연동';
+    const no=String(it['No']), src=no==='21'?'나인하이어 연동':(['25','26','36'].indexOf(no)>=0?'총무 대시보드 연동':'인사 DB 연동');
     const lines=auto.split('\n'), tbl=lines.filter(function(l){return l.indexOf('|')>=0});
     let inner;
     if(tbl.length>=2){
@@ -555,6 +618,193 @@
       }
     };
   }
+
+  /* ════════ 총무 대시보드 (#ga) ════════ */
+  const GA_ST=['신청 예정','신청 중','신청 완료','선정','진행 중','완료','미선정','포기'];
+  const GA_COLS=[['신청 예정',['신청 예정']],['신청 중',['신청 중']],['신청 완료 · 심사',['신청 완료']],['선정 · 진행 중',['선정','진행 중']],['완료',['완료']]];
+  const GA_TYPES=['인건비 지원','인증·선정','행사·대관','기타 지원'];
+  const GA_TCLS={'인건비 지원':'t1','인증·선정':'t2','행사·대관':'t3','기타 지원':'t4'};
+  const GA_CYC={'월':1,'분기':3,'반기':6,'연':12};
+  const GA_LABEL={fixed:'고정비',contract:'계약',grant:'지원사업',receipt:'지원금 입금'};
+  const won=function(n){ n=Math.round(Number(n)||0); return n.toLocaleString('ko-KR'); };
+  const manwon=function(n){ n=Number(n)||0; if(Math.abs(n)>=1e8) return (n/1e8).toFixed(n%1e8?1:0)+'<small>억원</small>'; if(Math.abs(n)>=1e4) return won(n/1e4)+'<small>만원</small>'; return won(n)+'<small>원</small>'; };
+  const days=function(a,b){ if(!a||!b) return null; return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/86400000); };
+  const ddChip=function(d, warnAt){ if(d===null) return ''; warnAt=warnAt||90; const c=d<0?'':d<=30?'r':d<=warnAt?'y':'g'; return '<span class="dd '+c+'">'+(d>0?'D-'+d:d===0?'D-Day':'지남')+'</span>'; };
+  const monthly=function(f){ return (Number(f['금액'])||0)/(GA_CYC[f['주기']]||1); };
+  const activeNow=function(f,t){ return String(f['사용여부']).toUpperCase()!=='N' && (!f['시작일']||f['시작일']<=t) && (!f['종료일']||f['종료일']>=t); };
+  const cell=function(v){ v=String(v==null?'':v).trim(); return v?esc(v):'<span class="na">–</span>'; };
+
+  window.addEventListener('hashchange',function(){
+    if(!TOKEN) return;
+    if(location.hash==='#ga' && MODE!=='ga'){ if(EDITING && !confirmLeave()){ history.replaceState(null,'','#'); return; } EDITING=null; showGa(); }
+    else if(location.hash!=='#ga' && MODE==='ga'){ MODE='report'; $('month').classList.remove('hidden'); $('newm').classList.toggle('hidden',!canEdit()); $('nav').innerHTML=''; if(CUR) render(); else if($('month').value) load($('month').value); }
+  });
+
+  function showGa(){
+    MODE='ga'; $('month').classList.add('hidden'); $('newm').classList.add('hidden');
+    $('main').innerHTML='<div class="loading">총무 대시보드를 불러오는 중…</div>'; $('nav').innerHTML='';
+    window.scrollTo(0,0);
+    call('getGa',{token:TOKEN}).then(function(r){
+      if(!r.ok){ if(r.expired){ store.set(null); show(false); $('lerr').textContent='세션이 만료되었습니다. 다시 로그인하세요.'; } else $('main').innerHTML='<div class="loading">'+esc(r.msg||'불러오지 못했습니다.')+'</div>'; return; }
+      GAD=r; renderDash(r.dash); if(MODE==='ga') renderGa();
+    }).catch(function(){ $('main').innerHTML='<div class="loading">데이터를 불러오지 못했습니다.</div>'; });
+  }
+
+  function gaCalc(){
+    const D=GAD.data, t=GAD.today;
+    const fx=D.fixed.filter(function(f){return activeNow(f,t)});
+    const ctr=D.contract.filter(function(c){return !c['상태']||c['상태']==='유효'}).map(function(c){
+      const dn=days(t,c['통보기한']), de=days(t,c['만료일']); const ks=[dn,de].filter(function(x){return x!==null&&x>=0});
+      return {c:c, dn:dn, de:de, key:ks.length?Math.min.apply(null,ks):99999};
+    }).sort(function(a,b){return a.key-b.key});
+    const recv={}; D.receipt.forEach(function(x){ if(x['입금일']&&x['입금일']<=t) recv[x['사업명']]=(recv[x['사업명']]||0)+(Number(x['금액'])||0); });
+    const money=function(g){ return g['구분']!=='인증·선정' && g['구분']!=='행사·대관'; };
+    const act=D.grant.filter(function(g){return ['선정','진행 중','완료'].indexOf(g['상태'])>=0 && money(g)});
+    const totG=act.reduce(function(a,g){return a+(Number(g['지원금'])||0)},0), totR=act.reduce(function(a,g){return a+(recv[g['사업명']]||0)},0);
+    return {fx:fx, fxSum:fx.reduce(function(a,f){return a+monthly(f)},0), ctr:ctr, recv:recv, money:money, totG:totG, totR:totR};
+  }
+
+  function renderGa(){
+    const C=gaCalc(), D=GAD.data, t=GAD.today;
+    const urgent=C.ctr.filter(function(x){return x.key<=90}).length;
+    const certSoon=D.grant.filter(function(g){ const d=days(t,g['종료일']); return g['구분']==='인증·선정' && g['상태']!=='포기' && d!==null && d>=0 && d<=90; }).length;
+    const running=D.grant.filter(function(g){return ['선정','진행 중'].indexOf(g['상태'])>=0}).length;
+    const applying=D.grant.filter(function(g){return ['신청 예정','신청 중','신청 완료'].indexOf(g['상태'])>=0}).length;
+    let h='<div class="gahd"><div><div class="meta">㈜컨트로맥스 · 경영지원팀 · 기준일 '+esc(t)+'</div><h2>총무 대시보드</h2></div><a class="back" href="#">← 월간 보고로</a></div>'+
+      '<div class="tiles">'+
+      '<div class="tile"><div class="k">월 고정비</div><div class="v">'+manwon(C.fxSum)+'</div><div class="s">'+C.fx.length+'개 항목 · 연 환산 '+won(C.fxSum*12)+'원</div></div>'+
+      '<div class="tile'+(urgent?' alert':'')+'"><div class="k">90일 내 만료·통보 계약</div><div class="v">'+urgent+'<small>건</small></div><div class="s">유효 계약 '+C.ctr.length+'건</div></div>'+
+      '<div class="tile"><div class="k">지원사업</div><div class="v">'+running+'<small>건 진행</small></div><div class="s">신청 단계 '+applying+'건'+(certSoon?' · 인증 만료 임박 '+certSoon+'건':'')+'</div></div>'+
+      '<div class="tile"><div class="k">미수령 지원금</div><div class="v">'+manwon(C.totG-C.totR)+'</div><div class="s">지원금 '+won(C.totG)+' 중 수령 '+won(C.totR)+'원</div></div>'+
+      '</div>';
+    h+='<section class="big" id="ga1">'+gaFixed(C)+'</section><section class="big" id="ga2">'+gaContracts(C)+'</section><section class="big" id="ga3">'+gaGrants(C)+'</section>';
+    $('main').innerHTML=h;
+    $('nav').innerHTML='<a class="l1" href="#">← 월간 보고</a><a class="l1" href="#ga" data-go="ga1">고정비</a><a class="l1" href="#ga" data-go="ga2">계약</a><a class="l1" href="#ga" data-go="ga3">정부지원사업</a>';
+  }
+
+  function addBtn(kind, label){ return canEdit()?'<button class="add" data-gaadd="'+kind+'">+ '+label+'</button>':''; }
+
+  function gaFixed(C){
+    const D=GAD.data, t=GAD.today;
+    let h='<div class="sechd"><h3>고정비</h3><span class="cnt">현재 적용 '+C.fx.length+'건 · 월 '+won(C.fxSum)+'원</span>'+addBtn('fixed','고정비 추가')+'</div>';
+    if(!D.fixed.length) return h+'<div class="empty2">등록된 고정비가 없습니다. 임차료·관리비·통신비·보험료 등 정기적으로 나가는 비용을 추가하세요.</div>';
+    const by={}; C.fx.forEach(function(f){ const k=f['구분']||'기타'; by[k]=(by[k]||0)+monthly(f); });
+    const ks=Object.keys(by).sort(function(a,b){return by[b]-by[a]}), mx=ks.length?by[ks[0]]:1;
+    h+='<div class="bars">'+ks.map(function(k){ return '<div class="brow"><span>'+esc(k)+'</span><span class="tr"><i style="width:'+(mx?Math.max(2,by[k]/mx*100):0)+'%"></i></span><span class="am">'+won(by[k])+'원 · '+(C.fxSum?Math.round(by[k]/C.fxSum*100):0)+'%</span></div>'; }).join('')+'</div>';
+    const rows=D.fixed.slice().sort(function(a,b){ const aa=activeNow(a,t)?0:1, bb=activeNow(b,t)?0:1; return aa-bb || monthly(b)-monthly(a); });
+    h+='<div class="tblwrap"><table class="gtbl"><thead><tr><th>항목</th><th>구분</th><th>거래처</th><th>금액</th><th>주기</th><th>월 환산</th><th>지급일</th><th>지급방법</th><th>기간</th><th>연결 계약</th></tr></thead><tbody>'+
+      rows.map(function(f){ const on=activeNow(f,t), dEnd=days(t,f['종료일']);
+        return '<tr class="'+(on?'':'dim ')+(canEdit()?'click':'')+'" data-gaedit="fixed|'+esc(f['ID'])+'"><td class="l">'+cell(f['항목'])+(on?'':' <span class="dd">미적용</span>')+'</td><td>'+cell(f['구분'])+'</td><td>'+cell(f['거래처'])+'</td><td class="n">'+(f['금액']!==''?won(f['금액']):'<span class="na">–</span>')+'</td><td>'+cell(f['주기']||'월')+'</td><td class="n">'+won(monthly(f))+'</td><td>'+cell(f['지급일'])+'</td><td>'+cell(f['지급방법'])+'</td><td>'+cell((f['시작일']||'')+(f['시작일']||f['종료일']?' ~ ':'')+(f['종료일']||''))+(on&&dEnd!==null&&dEnd<=60?ddChip(dEnd,60):'')+'</td><td>'+cell(f['연결계약'])+'</td></tr>'; }).join('')+
+      '</tbody></table></div>';
+    return h;
+  }
+
+  function gaContracts(C){
+    const D=GAD.data;
+    let h='<div class="sechd"><h3>계약</h3><span class="cnt">유효 '+C.ctr.length+'건</span>'+addBtn('contract','계약 추가')+'</div>';
+    if(!D.contract.length) return h+'<div class="empty2">등록된 계약이 없습니다. 임대차·용역·리스·유지보수 계약을 추가하면 만료일과 통보 기한을 D-day로 보여줍니다.</div>';
+    const row=function(x, dim){ const c=x.c, u=safeUrl(c['계약서링크']);
+      return '<tr class="'+(dim?'dim ':'')+(canEdit()?'click':'')+'" data-gaedit="contract|'+esc(c['ID'])+'"><td class="l"><b>'+cell(c['계약명'])+'</b></td><td>'+cell(c['유형'])+'</td><td>'+cell(c['상대방'])+'</td><td>'+cell(c['시작일'])+'</td>'+
+        '<td>'+cell(c['통보기한']||(c['자동갱신']==='Y'&&!dim?'확인 필요':''))+(dim?'':ddChip(x.dn,90))+'</td><td>'+cell(c['만료일'])+(dim?'':ddChip(x.de,90))+'</td><td>'+cell(c['자동갱신'])+'</td>'+
+        '<td class="n">'+(c['보증금']!==''?won(c['보증금']):'<span class="na">–</span>')+'</td><td class="n">'+(c['월금액']!==''?won(c['월금액']):'<span class="na">–</span>')+'</td><td>'+cell(c['담당자'])+'</td>'+
+        '<td>'+(u?'<a href="'+esc(u)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">열기</a>':'<span class="na">–</span>')+'</td></tr>'; };
+    const closed=D.contract.filter(function(c){return c['상태']&&c['상태']!=='유효'});
+    h+='<div class="tblwrap"><table class="gtbl"><thead><tr><th>계약명</th><th>유형</th><th>상대방</th><th>시작일</th><th>통보 기한</th><th>만료일</th><th>자동갱신</th><th>보증금</th><th>월 금액</th><th>담당</th><th>계약서</th></tr></thead><tbody>'+
+      C.ctr.map(function(x){return row(x,false)}).join('')+closed.map(function(c){return row({c:c,dn:null,de:null},true)}).join('')+'</tbody></table></div>'+
+      '<div class="closed">통보 기한: 해지·갱신 거절을 알려야 하는 마지막 날. 자동갱신 계약은 이 날을 넘기면 계약이 연장될 수 있습니다.</div>';
+    return h;
+  }
+
+  function gaGrants(C){
+    const D=GAD.data, t=GAD.today;
+    let h='<div class="sechd"><h3>정부지원사업</h3><span class="cnt">'+D.grant.length+'건</span>'+(canEdit()?'<button class="add" data-gaadd="receipt" style="background:#fff;color:var(--navy);border:1px solid var(--line)">+ 입금 기록</button>':'')+addBtn('grant','사업 추가')+'</div>';
+    h+='<div class="gfilter">'+['전체'].concat(GA_TYPES).map(function(k){ const n=k==='전체'?D.grant.length:D.grant.filter(function(g){return g['구분']===k}).length; return '<button class="'+(GAF===k?'on':'')+'" data-gaf="'+esc(k)+'">'+esc(k)+' '+n+'</button>'; }).join('')+'</div>';
+    const list=D.grant.filter(function(g){return GAF==='전체'||g['구분']===GAF});
+    if(!list.length) return h+'<div class="empty2">해당하는 지원사업이 없습니다.</div>';
+    const cols=GA_COLS.slice(); const none=list.filter(function(g){return GA_ST.indexOf(g['상태'])<0});
+    if(none.length) cols.unshift(['상태 미입력',['']]);
+    h+='<div class="kanban">'+cols.map(function(col){
+      const its=col[0]==='상태 미입력'?none:list.filter(function(g){return col[1].indexOf(g['상태'])>=0});
+      if(!its.length) return '';
+      return '<div class="kcol"><h5>'+esc(col[0])+'<span>'+its.length+'</span></h5>'+its.map(function(g){return gCard(g,C,t)}).join('')+'</div>';
+    }).join('')+'</div>';
+    const dead=list.filter(function(g){return ['미선정','포기'].indexOf(g['상태'])>=0});
+    if(dead.length) h+='<details class="closed"><summary>미선정 · 포기 '+dead.length+'건</summary><div class="kanban" style="margin-top:8px"><div class="kcol">'+dead.map(function(g){return gCard(g,C,t)}).join('')+'</div></div></details>';
+    return h;
+  }
+  function gCard(g,C,t){
+    const amt=Number(g['지원금'])||0, got=C.recv[g['사업명']]||0, m=C.money(g);
+    let w=[];
+    if(g['구분']==='인증·선정' && g['종료일']) w.push('유효기간 ~'+esc(g['종료일'])+ddChip(days(t,g['종료일']),90));
+    else if(['신청 예정','신청 중'].indexOf(g['상태'])>=0 && g['신청마감']) w.push('신청 마감 '+esc(g['신청마감'])+ddChip(days(t,g['신청마감']),14));
+    else if(g['상태']==='신청 완료' && g['발표일']) w.push('발표 '+esc(g['발표일'])+ddChip(days(t,g['발표일']),14));
+    else if(g['시작일']||g['종료일']) w.push(esc((g['시작일']||'')+' ~ '+(g['종료일']||'')));
+    if(g['다음일정']) w.push(esc(g['다음일정'])+(g['다음일정일']?' '+esc(g['다음일정일'])+ddChip(days(t,g['다음일정일']),14):''));
+    return '<div class="gcard" data-gaedit="grant|'+esc(g['ID'])+'"><span class="tag '+(GA_TCLS[g['구분']]||'t4')+'">'+esc(g['구분']||'구분 없음')+'</span>'+
+      '<div class="t">'+esc(g['사업명'])+'</div><div class="o">'+esc(g['주관기관']||'')+(g['담당자']?' · '+esc(g['담당자']):'')+'</div>'+
+      (m&&amt?'<div class="m"><span>수령</span><span>'+won(got)+' / '+won(amt)+'</span></div><div class="pb"><i style="width:'+Math.min(100,got/amt*100)+'%"></i></div><div class="m"><span>미수령</span><b>'+won(amt-got)+'원</b></div>':'')+
+      (w.length?'<div class="w">'+w.join('<br>')+'</div>':'')+
+      (g['비고']?'<div class="o" style="margin-top:6px">'+esc(g['비고'])+'</div>':'')+'</div>';
+  }
+
+  document.addEventListener('click',function(e){
+    if(MODE!=='ga') return;
+    const go=e.target.closest('[data-go]'); if(go){ e.preventDefault(); $(go.getAttribute('data-go')).scrollIntoView({behavior:'smooth'}); return; }
+    const f=e.target.closest('[data-gaf]'); if(f){ GAF=f.getAttribute('data-gaf'); $('ga3').innerHTML=gaGrants(gaCalc()); return; }
+    const a=e.target.closest('[data-gaadd]'); if(a){ gaForm(a.getAttribute('data-gaadd'), null); return; }
+    const ed=e.target.closest('[data-gaedit]'); if(ed){ const p=ed.getAttribute('data-gaedit').split('|'); const it=GAD.data[p[0]].find(function(x){return x['ID']===p[1]}); if(it) gaForm(p[0], it); }
+  });
+
+  function gaForm(kind, it, preset){
+    const cols=GAD.schema[kind], ro=!canEdit();
+    const val=function(k){ return it?it[k]:(preset&&preset[k]!=null?preset[k]:({'주기':'월','사용여부':'Y','상태':kind==='contract'?'유효':''}[k]||'')); };
+    const grantNames=GAD.data.grant.map(function(g){return g['사업명']});
+    let h='<div class="mbox"><h3>'+GA_LABEL[kind]+' '+(it?(ro?'정보':'수정'):'추가')+'</h3><form class="mgrid" id="gaf">';
+    cols.forEach(function(c){
+      if(c.k==='ID') return;
+      const v=val(c.k), lab=c.k+(c.k==='종료일'&&kind==='grant'?' (인증: 유효기간 만료일)':'')+(c.k==='지원금'?' (협약·예정 총액, 원)':'')+(c.t==='num'&&c.k!=='지원금'?' (원)':'');
+      let inp;
+      const opts=kind==='receipt'&&c.k==='사업명'?grantNames:c.opts;
+      if(opts) inp='<select name="'+esc(c.k)+'"'+(ro?' disabled':'')+'><option value=""></option>'+opts.map(function(o){return '<option'+(String(v)===o?' selected':'')+'>'+esc(o)+'</option>'}).join('')+'</select>';
+      else if(c.t==='date') inp='<input type="date" name="'+esc(c.k)+'" value="'+esc(v)+'"'+(ro?' disabled':'')+'>';
+      else if(c.t==='num') inp='<input inputmode="numeric" name="'+esc(c.k)+'" value="'+(v===''||v==null?'':esc(won(v)))+'"'+(ro?' disabled':'')+' data-num="1">';
+      else inp='<input name="'+esc(c.k)+'" value="'+esc(v)+'"'+(ro?' disabled':'')+(c.t==='url'?' placeholder="https://…"':'')+'>';
+      const full=['비고','계약서링크','자료링크','사업명','계약명','항목'].indexOf(c.k)>=0;
+      h+='<label class="'+(full?'full':'')+'"><span class="'+(c.req?'req':'')+'">'+esc(lab)+'</span>'+inp+'</label>';
+    });
+    h+='</form>';
+    if(kind==='grant' && it){
+      const rs=GAD.data.receipt.filter(function(r){return r['사업명']===it['사업명']}).sort(function(a,b){return a['입금일']<b['입금일']?-1:1});
+      const sum=rs.reduce(function(a,r){return a+(Number(r['금액'])||0)},0);
+      h+='<div class="msub"><h4>지원금 입금 이력 · 합계 '+won(sum)+'원'+(canEdit()?'<button type="button" class="ebtn" data-rcadd="1">+ 입금 기록</button>':'')+'</h4>'+
+        (rs.length?'<div class="vtbl"><table><thead><tr><th>입금일</th><th>금액</th><th>내용</th><th>비고</th></tr></thead><tbody>'+rs.map(function(r){return '<tr class="'+(canEdit()?'click':'')+'" data-rcedit="'+esc(r['ID'])+'" style="cursor:pointer"><td>'+cell(r['입금일'])+'</td><td class="n">'+won(r['금액'])+'</td><td>'+cell(r['내용'])+'</td><td>'+cell(r['비고'])+'</td></tr>'}).join('')+'</tbody></table></div>':'<div class="o" style="color:var(--mute);font-size:13px">입금 기록이 없습니다.</div>')+'</div>';
+    }
+    h+='<div class="eact">'+(it&&canEdit()?'<button type="button" class="del">삭제</button>':'')+'<button type="button" class="cancel">'+(ro?'닫기':'취소')+'</button>'+(ro?'':'<button type="button" class="save">저장</button>')+'</div></div>';
+    const m=$('modal'); m.innerHTML=h; m.classList.remove('hidden'); document.body.style.overflow='hidden';
+    m.querySelectorAll('[data-num]').forEach(function(i){ i.addEventListener('input',function(){ const d=this.value.replace(/[^0-9]/g,''); this.value=d?Number(d).toLocaleString('ko-KR'):''; }); });
+    const close=function(){ m.classList.add('hidden'); m.innerHTML=''; m.onclick=null; document.body.style.overflow=''; };
+    m.onclick=function(e){
+      if(e.target===m || e.target.closest('.cancel')){ close(); return; }
+      if(e.target.closest('[data-rcadd]')){ close(); gaForm('receipt', null, {'사업명':it['사업명'], '입금일':GAD.today}); return; }
+      const rc=e.target.closest('[data-rcedit]'); if(rc && canEdit()){ const r=GAD.data.receipt.find(function(x){return x['ID']===rc.getAttribute('data-rcedit')}); close(); if(r) gaForm('receipt', r); return; }
+      if(e.target.closest('.del')){
+        if(!window.confirm('「'+(it['사업명']||it['계약명']||it['항목']||it['입금일'])+'」 항목을 삭제할까요? 시트에서도 삭제됩니다.')) return;
+        call('deleteGa',{token:TOKEN, kind:kind, id:it['ID']}).then(function(r){ if(!r.ok){ toast(r.msg||'삭제 실패', true); return; } close(); toast('삭제했습니다.'); showGa(); }).catch(function(){ toast('서버 연결 오류', true); });
+        return;
+      }
+      const sv=e.target.closest('.save'); if(sv){
+        const fields={}; [].forEach.call($('gaf').elements,function(el){ if(el.name) fields[el.name]=el.getAttribute('data-num')?el.value.replace(/,/g,''):el.value; });
+        const miss=cols.filter(function(c){return c.req && !String(fields[c.k]||'').trim()}); if(miss.length){ toast(miss[0].k+'을(를) 입력하세요.', true); return; }
+        sv.disabled=true; sv.textContent='저장 중…';
+        call('saveGa',{token:TOKEN, kind:kind, id:it?it['ID']:'', fields:fields}).then(function(r){
+          if(!r.ok){ sv.disabled=false; sv.textContent='저장'; toast(r.expired?'세션이 만료되었습니다. 다시 로그인하세요.':(r.msg||'저장 실패'), true); return; }
+          close(); toast('저장했습니다. 시트와 월간 보고에 반영되었습니다.'); showGa();
+        }).catch(function(){ sv.disabled=false; sv.textContent='저장'; toast('서버 연결 오류로 저장하지 못했습니다.', true); });
+      }
+    };
+    const first=m.querySelector('input,select'); if(first && !ro) first.focus();
+  }
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && !$('modal').classList.contains('hidden')){ $('modal').classList.add('hidden'); $('modal').innerHTML=''; document.body.style.overflow=''; } });
 
   (function(){
     const t=store.get(); if(!t) return;
