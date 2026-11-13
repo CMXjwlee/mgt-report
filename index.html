@@ -235,6 +235,11 @@
   .rtbl th.l,.rtbl td.l{text-align:left;white-space:normal} .rtbl td:not(.n):not(.l){text-align:left;white-space:normal}
   .rtbl tr.tot td{font-weight:700;background:#f7f9fc;border-top:1.5px solid var(--line)}
   .rtbl .jl{font-size:12px;color:var(--mute);font-weight:400;margin-top:2px;white-space:normal}
+  .rsub{font-size:14px;margin:18px 0 8px;color:var(--navy2)} .rsub .na{font-weight:500}
+  .ralert{margin-top:10px;padding:10px 14px;border-radius:8px;background:var(--badbg);color:var(--bad);font-size:14px;font-weight:600}
+  .rnote1{margin-top:8px;font-size:14px;color:var(--sub)}
+  .rstat .bad b{color:var(--bad)} .rstat .ok b{color:var(--good)}
+  .card .auto .autoh{font-weight:700;margin-top:12px;color:#1d3157}
   .rnote{margin:10px 0 0;padding-left:18px;color:var(--sub);font-size:14px} .rnote li{margin:2px 0}
   .rsrc{margin-top:10px;font-size:12px;color:var(--mute)}
   .rmiss{margin-top:10px;font-size:13px;color:var(--mute)}
@@ -523,6 +528,19 @@
     let stamp=''; lines=lines.filter(function(l){ if(STAMP.test(l)){ stamp=l.replace(/[()]/g,''); return false; } return true; });
     if(!lines.length) return '';
     let h='';
+    if(no==='36'){ const g=rGrant(lines); if(g) return g+(stamp?'<div class="rsrc">'+esc(stamp)+'</div>':''); }
+    if(lines.some(function(l){return /^## /.test(l)})){
+      const pre=[], blocks=[]; let cur=null;
+      lines.forEach(function(l){ if(/^## /.test(l)){ cur={t:l.slice(3).trim(),l:[]}; blocks.push(cur); } else (cur?cur.l:pre).push(l); });
+      if(no==='22') h+=rAttStat(pre, blocks); else if(pre.length) h+='<ul class="rnote">'+pre.map(function(l){return '<li>'+esc(l)+'</li>'}).join('')+'</ul>';
+      blocks.forEach(function(b){
+        const t=b.l.filter(function(l){return l.indexOf('|')>=0}), n=b.l.filter(function(l){return l.indexOf('|')<0});
+        h+='<h6 class="rsub">'+esc(b.t)+'</h6>';
+        if(t.length>=2) h+=rTable(t[0].split('|').map(function(c){return c.trim()}), t.slice(1).map(function(l){return l.split('|').map(function(c){return c.trim()})}));
+        n.forEach(function(l){ const alert=/^52시간 초과:/.test(l) && !/없음$/.test(l); h+='<div class="'+(alert?'ralert':(/^※/.test(l)?'rsrc':'rnote1'))+'">'+esc(l)+'</div>'; });
+      });
+      return h+(stamp?'<div class="rsrc">'+esc(stamp)+'</div>':'');
+    }
     if(no==='19'){
       const pts=lines.map(function(l){ const m=l.match(/^(\d{4})-(\d{2})\s+(\d+)명/); return m?{m:Number(m[2])+'월',v:Number(m[3])}:null; }).filter(Boolean);
       if(pts.length){ const mx=Math.max.apply(null,pts.map(function(p){return p.v})), mn=Math.min.apply(null,pts.map(function(p){return p.v}));
@@ -547,14 +565,6 @@
       let cs=cols;
       if(no==='25'){ rows=rows.filter(function(r){ return !(r[2]==='0' && (r[3]==='0'||r[3]==='')) ; });
         if(rows.every(function(r){return r[3]==='0'||r[3]===''})){ cs=cols.slice(0,3); rows=rows.map(function(r){return r.slice(0,3)}); } }
-      if(no==='36' && cols.length>=10){
-        cs=['사업','상태','지원액 (원)','수령 · 사용','잔액','다음 일정'];
-        rows=rows.map(function(r){
-          const amt=[['현금',r[3]],['바우처',r[4]],['이자지원',r[5]]].filter(function(x){return x[1]}).map(function(x){return x[0]+' '+x[1]}).join(' / ');
-          const did=[['수령',r[6]],['사용',r[7]]].filter(function(x){return x[1]}).map(function(x){return x[0]+' '+x[1]}).join(' / ');
-          return [r[1]+(r[0]&&r[0]!=='지원사업'?' ('+r[0]+')':''), r[2], amt, did, r[8], r[9]];
-        });
-      }
       h+=rTable(cs,rows);
       lines=lines.filter(function(l){return l.indexOf('|')<0});
     }
@@ -591,6 +601,44 @@
       '<div class="rtbl"><table><thead><tr><th class="l">직군</th><th>공고</th><th>총 지원</th><th>당월 지원</th><th>진행 중</th><th>최종합격</th></tr></thead><tbody>'+body+
       '<tr class="tot"><td class="l">합계</td><td class="n">'+T.n+'</td><td class="n">'+T.t+'</td><td class="n">'+T.m+'</td><td class="n">'+T.p+'</td><td class="n">'+T.h+'</td></tr></tbody></table></div>'+
       '<div class="rsrc">현재 기준 · 직군은 공고명으로 자동 분류 · 공고별 월말 대비 증감은 「작성하기」 화면에서 확인</div>';
+  }
+
+  /* 근태 요약 숫자 */
+  function rAttStat(pre, blocks){
+    const t=pre.join(' '), g=function(re){ const m=t.match(re); return m?m[1]:''; };
+    let bad=0; const wk=blocks.find(function(b){return /52시간/.test(b.t)});
+    if(wk) wk.l.forEach(function(l){ const c=l.split('|'); if(c.length>=5 && !/^주\s*$/.test(c[0].trim())) bad+=Number(c[4])||0; });
+    const rest=pre.filter(function(l){return !/^연장근무 합계|^지각/.test(l)});
+    return '<div class="rstat"><div><span>1인당 연장</span><b>'+esc(g(/1인당\s*([\d.]+)시간/))+'<small>시간</small></b></div><div><span>연장 합계</span><b>'+esc(g(/연장근무 합계\s*([\d.]+)시간/))+'<small>시간</small></b></div>'+
+      '<div><span>지각</span><b>'+esc(g(/지각\s*(\d+)건/))+'<small>건</small></b></div><div><span>조퇴</span><b>'+esc(g(/조퇴\s*(\d+)건/))+'<small>건</small></b></div>'+
+      (wk?'<div class="'+(bad?'bad':'ok')+'"><span>주 52시간 초과</span><b>'+bad+'<small>건</small></b></div>':'')+'</div>'+
+      (rest.length?'<ul class="rnote">'+rest.map(function(l){return '<li>'+esc(l.replace(/^※\s*/,''))+'</li>'}).join('')+'</ul>':'');
+  }
+  /* 정부지원사업 → 카테고리별 */
+  function rGrant(lines){
+    const tbl=lines.filter(function(l){return l.indexOf('|')>=0}); if(tbl.length<2) return '';
+    const cols=tbl[0].split('|').map(function(c){return c.trim()}); if(cols.length<10) return '';
+    const rows=tbl.slice(1).map(function(l){return l.split('|').map(function(c){return c.trim()})});
+    const notes=lines.filter(function(l){return l.indexOf('|')<0});
+    const cat=function(r){ if(r[0]==='인증') return '인증'; if(r[3]) return '인건비·현금 지원'; if(r[4]) return '바우처'; if(r[5]) return '이자지원'; return '혜택·기타'; };
+    const order=['인건비·현금 지원','바우처','이자지원','혜택·기타','인증'], g={};
+    rows.forEach(function(r){ (g[cat(r)]=g[cat(r)]||[]).push(r); });
+    const num=function(re){ const l=notes.find(function(x){return /선정 이후/.test(x)})||''; const m=l.match(re); return m?m[1]:''; };
+    let h='<div class="rstat"><div><span>진행·완료 지원사업</span><b>'+rows.filter(function(r){return r[0]==='지원사업'&&/진행 중|완료/.test(r[2])}).length+'<small>건</small></b></div>'+
+      '<div><span>현금 지원</span><b>'+esc(num(/현금\s*([\d,]+)/))+'<small>원</small></b></div><div><span>바우처</span><b>'+esc(num(/바우처\s*([\d,]+)/))+'<small>원</small></b></div><div><span>이자지원</span><b>'+esc(num(/이자지원\s*([\d,]+)/))+'<small>원</small></b></div></div>';
+    const spec={
+      '인건비·현금 지원':[['사업','상태','현금 지원','수령','잔액','다음 일정'],function(r){return [r[1],r[2],r[3],r[6],r[8],r[9]]}],
+      '바우처':[['사업','상태','바우처 지원','사용','잔액','다음 일정'],function(r){return [r[1],r[2],r[4],r[7],r[8],r[9]]}],
+      '이자지원':[['사업','상태','이자지원(상당액)','다음 일정'],function(r){return [r[1],r[2],r[5],r[9]]}],
+      '혜택·기타':[['사업','상태','다음 일정'],function(r){return [r[1],r[2],r[9]]}],
+      '인증':[['인증','상태','유효기간 · 일정'],function(r){return [r[1],r[2],r[9]]}]
+    };
+    order.forEach(function(k){ if(!g[k]) return; h+='<h6 class="rsub">'+esc(k)+' <span class="na">'+g[k].length+'건</span></h6>'+rTable(spec[k][0], g[k].map(spec[k][1])); });
+    const ev=notes.find(function(l){return /^당월 채용행사/.test(l)});
+    if(ev){ const m=ev.match(/^당월 채용행사·간담회\s*(\d+)건:\s*(.*)$/); h+='<h6 class="rsub">당월 채용행사·간담회 <span class="na">'+(m?m[1]:'')+'건</span></h6><ul class="rnote">'+(m?m[2]:ev).split(/,\s*/).map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>'; }
+    const rest=notes.filter(function(l){return !/^당월 채용행사|^선정 이후/.test(l)});
+    if(rest.length) h+='<div class="rsrc">'+rest.map(esc).join(' · ')+'</div>';
+    return h;
   }
   function rItem(it){
     const body=viewBody(it), auto=rAuto(it), url=safeUrl(it['첨부링크']);
@@ -703,6 +751,12 @@
     const no=String(it['No']), src=no==='21'?'나인하이어 연동':(['25','26','36'].indexOf(no)>=0?'총무 대시보드 연동':'인사 DB 연동');
     const lines=auto.split('\n'), tbl=lines.filter(function(l){return l.indexOf('|')>=0});
     let inner;
+    if(lines.some(function(l){return /^## /.test(l)})){
+      inner=''; let buf=[];
+      const flush=function(){ const t=buf.filter(function(l){return l.indexOf('|')>=0}); if(t.length>=2) inner+=tableHtml(t[0].split('|').map(function(c){return c.trim()}), t.slice(1).map(function(l){return l.split('|').map(function(c){return c.trim()})})); buf.filter(function(l){return l.indexOf('|')<0&&l.trim()}).forEach(function(l){ inner+='<div class="autonote">'+esc(l)+'</div>'; }); buf=[]; };
+      lines.forEach(function(l){ if(/^## /.test(l)){ flush(); inner+='<div class="autoh">'+esc(l.slice(3))+'</div>'; } else buf.push(l); }); flush();
+      return '<div class="auto tbl"><b>자동 집계 · '+src+(locked?' (수정 불가)':'')+'</b>'+inner+'</div>';
+    }
     if(tbl.length>=2){
       const cols=tbl[0].split('|').map(function(c){return c.trim()}), rows=tbl.slice(1).map(function(l){return l.split('|').map(function(c){return c.trim()})});
       inner=tableHtml(cols, rows)+lines.filter(function(l){return l.indexOf('|')<0}).map(function(l){return '<div class="autonote">'+esc(l)+'</div>'}).join('');
