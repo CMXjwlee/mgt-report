@@ -624,7 +624,10 @@
   const GA_COLS=[['신청 예정',['신청 예정']],['신청 중',['신청 중']],['신청 완료 · 심사',['신청 완료']],['선정 · 진행 중',['선정','진행 중']],['완료',['완료']]];
   const GA_TYPES=['지원사업','인증','채용행사','간담회·점검'];
   const GA_TCLS={'지원사업':'t1','인증':'t2','채용행사':'t3','간담회·점검':'t4'};
-  const gKind=function(g){ const f=g['지원형태']; return (f==='현금(사용형)'||f==='바우처')?'use':(f==='인건비'||f==='현금')?'recv':''; };
+  const N=function(v){ return Number(v)||0; }, HAS=function(v){ return String(v==null?'':v)!==''; };
+  const MONEY=[['현금지원액','현금'],['바우처지원액','바우처'],['이자지원액','이자지원'],['자부담','자부담'],['수령액','수령'],['사용액','사용']];
+  const unpaid=function(g){ return HAS(g['수령액'])&&N(g['현금지원액']) ? N(g['현금지원액'])-N(g['수령액']) : null; };
+  const unused=function(g){ return HAS(g['사용액']) ? N(g['현금지원액'])+N(g['바우처지원액'])+N(g['자부담'])-N(g['사용액']) : null; };
   const SEL=['선정','진행 중','완료'], APPLY=['신청 예정','신청 중','신청 완료'];
   const GA_CYC={'월':1,'분기':3,'반기':6,'연':12};
   const GA_LABEL={fixed:'고정비',contract:'계약',grant:'지원사업·인증·행사'};
@@ -659,9 +662,10 @@
       const dn=days(t,c['통보기한']), de=days(t,c['만료일']); const ks=[dn,de].filter(function(x){return x!==null&&x>=0});
       return {c:c, dn:dn, de:de, key:ks.length?Math.min.apply(null,ks):99999};
     }).sort(function(a,b){return a.key-b.key});
-    const tot={recv:[0,0],use:[0,0],unk:0};
-    D.grant.forEach(function(g){ const k=gKind(g), amt=Number(g['지원금'])||0; if(g['구분']!=='지원사업'||!k||!amt||SEL.indexOf(g['상태'])<0) return;
-      const v=k==='use'?g['집행액']:g['수령액']; if(String(v)===''){ tot.unk++; return; } tot[k][0]+=amt; tot[k][1]+=Number(v)||0; });
+    const tot={unpaid:0,unused:0,unk:0};
+    D.grant.forEach(function(g){ if(g['구분']!=='지원사업'||SEL.indexOf(g['상태'])<0) return;
+      const a=unpaid(g), b=unused(g); if(a!==null) tot.unpaid+=a; if(b!==null) tot.unused+=b;
+      if(a===null && b===null && (N(g['현금지원액'])||N(g['바우처지원액']))) tot.unk++; });
     return {fx:fx, fxSum:fx.reduce(function(a,f){return a+monthly(f)},0), ctr:ctr, tot:tot};
   }
 
@@ -677,7 +681,7 @@
       '<div class="tile"><div class="k">월 고정비</div><div class="v">'+manwon(C.fxSum)+'</div><div class="s">'+C.fx.length+'개 항목 · 연 환산 '+won(C.fxSum*12)+'원</div></div>'+
       '<div class="tile'+(urgent?' alert':'')+'"><div class="k">90일 내 만료·통보 계약</div><div class="v">'+urgent+'<small>건</small></div><div class="s">유효 계약 '+C.ctr.length+'건</div></div>'+
       '<div class="tile"><div class="k">지원사업</div><div class="v">'+running+'<small>건 진행</small></div><div class="s">신청·심사 단계(인증 포함) '+applying+'건'+(upcoming?' · 30일 내 행사 '+upcoming+'건':'')+(certSoon?' · 인증 만료 임박 '+certSoon+'건':'')+'</div></div>'+
-      '<div class="tile"><div class="k">지원금 잔액</div><div class="v">'+manwon((C.tot.recv[0]-C.tot.recv[1])+(C.tot.use[0]-C.tot.use[1]))+'</div><div class="s">미수령 '+won(C.tot.recv[0]-C.tot.recv[1])+' · 미집행 '+won(C.tot.use[0]-C.tot.use[1])+'원'+(C.tot.unk?' · 금액 미입력 '+C.tot.unk+'건 제외':'')+'</div></div>'+
+      '<div class="tile"><div class="k">미수령 / 미사용</div><div class="v" style="font-size:22px">'+manwon(C.tot.unpaid)+' <span style="color:var(--mute);font-weight:500">/</span> '+manwon(C.tot.unused)+'</div><div class="s">수령액·사용액 입력한 사업 기준'+(C.tot.unk?' · 미입력 '+C.tot.unk+'건':'')+'</div></div>'+
       '</div>';
     h+='<section class="big" id="ga1">'+gaFixed(C)+'</section><section class="big" id="ga2">'+gaContracts(C)+'</section><section class="big" id="ga3">'+gaGrants(C)+'</section>';
     $('main').innerHTML=h;
@@ -735,21 +739,18 @@
     return h;
   }
   function gSummary(){
-    const D=GAD.data, rows=D.grant.filter(function(g){return g['구분']==='지원사업' && Number(g['지원금'])});
+    const rows=GAD.data.grant.filter(function(g){return g['구분']==='지원사업' && MONEY.some(function(m){return N(g[m[0]])})});
     if(!rows.length) return '';
-    const grp=function(st){ return rows.filter(function(g){return st.indexOf(g['상태'])>=0}); };
-    const forms=['인건비','현금','현금(사용형)','바우처','이자지원','혜택·가점','기타',''];
-    const sum=function(list,key){ return list.reduce(function(a,g){return a+(Number(g[key])||0)},0); };
-    const line=function(label,list){ if(!list.length) return '';
-      const by={}; list.forEach(function(g){ const f=g['지원형태']||'미지정'; by[f]=(by[f]||0)+(Number(g['지원금'])||0); });
-      return '<tr><td class="l"><b>'+label+'</b> '+list.length+'건</td><td class="l">'+Object.keys(by).map(function(f){return esc(f)+' '+won(by[f])}).join(' · ')+'</td><td class="n"><b>'+won(sum(list,'지원금'))+'</b></td></tr>'; };
-    const a=grp(SEL), b=grp(APPLY);
-    return '<div class="tblwrap" style="margin-bottom:14px"><table class="gtbl"><thead><tr><th>지원금 규모 (지원사업)</th><th>지원형태별 (원)</th><th>합계 (원)</th></tr></thead><tbody>'+
-      line('확정 (선정·진행 중·완료)',a)+line('미확정 (신청 단계, 최대 금액)',b)+
-      '<tr><td class="l"><b>합계 (최대)</b></td><td></td><td class="n"><b>'+won(sum(a,'지원금')+sum(b,'지원금'))+'</b></td></tr></tbody></table></div>';
+    const sum=function(list,k){ return list.reduce(function(a,g){return a+N(g[k])},0); };
+    const cellN=function(v){ return v?won(v):'<span class="na">–</span>'; };
+    const line=function(label,list,bold){ return '<tr><td class="l">'+(bold?'<b>'+label+'</b>':label)+' <span class="na">'+list.length+'건</span></td>'+MONEY.map(function(m){ const v=sum(list,m[0]); return '<td class="n">'+(bold?'<b>'+cellN(v)+'</b>':cellN(v))+'</td>'; }).join('')+'</tr>'; };
+    const a=rows.filter(function(g){return SEL.indexOf(g['상태'])>=0}), b=rows.filter(function(g){return APPLY.indexOf(g['상태'])>=0});
+    return '<div class="tblwrap" style="margin-bottom:14px"><table class="gtbl"><thead><tr><th>지원사업 금액 (원)</th><th>현금 지원</th><th>바우처 지원</th><th>이자지원</th><th>자부담</th><th>수령</th><th>사용</th></tr></thead><tbody>'+
+      line('확정 (선정·진행 중·완료)',a,true)+line('미확정 (신청 단계, 최대 금액)',b,false)+'</tbody></table></div>'+
+      '<div class="closed" style="margin:-6px 0 14px">유형이 다른 금액은 더하지 않습니다. 미수령 = 현금 지원 − 수령, 미사용 = 현금 지원 + 바우처 + 자부담 − 사용 (수령·사용을 입력한 사업만 계산)</div>';
   }
   function gCard(g,C,t){
-    const amt=Number(g['지원금'])||0, k=gKind(g), small=g['상태']==='완료' && (g['구분']==='채용행사'||g['구분']==='간담회·점검');
+    const small=g['상태']==='완료' && (g['구분']==='채용행사'||g['구분']==='간담회·점검');
     const w=[];
     if(g['구분']==='인증' && g['종료일']) w.push('유효기간 ~'+esc(g['종료일'])+ddChip(days(t,g['종료일']),90));
     else if((g['구분']==='채용행사'||g['구분']==='간담회·점검') && g['시작일']) w.push(esc(g['시작일'])+(g['상태']!=='완료'?ddChip(days(t,g['시작일']),14):''));
@@ -757,12 +758,13 @@
     else if(g['기간']) w.push(esc(g['기간']));
     if(!small && g['다음일정']) w.push('▸ '+esc(g['다음일정'])+(g['다음일정일']?ddChip(days(t,g['다음일정일']),14):''));
     let money='';
-    if(!small && amt){
-      const v=k==='use'?g['집행액']:g['수령액'], done=Number(v)||0, blank=String(v)==='';
-      if(k && SEL.indexOf(g['상태'])>=0){
-        money=blank ? '<div class="m"><span>'+esc(g['지원형태'])+' '+won(amt)+'</span><span class="na">'+(k==='use'?'집행':'수령')+'액 미입력</span></div>'
-          : '<div class="m"><span>'+(k==='use'?'집행':'수령')+'</span><span>'+won(done)+' / '+won(amt)+'</span></div><div class="pb"><i style="width:'+Math.min(100,done/amt*100)+'%"></i></div><div class="m"><span>'+(k==='use'?'미집행':'미수령')+'</span><b>'+won(amt-done)+'원</b></div>';
-      } else money='<div class="m"><span>'+esc(g['지원형태']||'지원금')+(APPLY.indexOf(g['상태'])>=0?' (최대)':'')+'</span><b>'+won(amt)+'원</b></div>';
+    if(!small){
+      const parts=MONEY.slice(0,4).filter(function(m){return N(g[m[0]])}).map(function(m){return m[1]+' '+won(g[m[0]])});
+      if(parts.length) money+='<div class="m"><span>'+(APPLY.indexOf(g['상태'])>=0?'최대 ':'')+'지원</span><span style="text-align:right">'+parts.join('<br>')+'</span></div>';
+      const up=unpaid(g), us=unused(g);
+      if(up!==null){ const tot=N(g['현금지원액']); money+='<div class="m"><span>수령 '+won(g['수령액'])+'</span><b>미수령 '+won(up)+'</b></div><div class="pb"><i style="width:'+Math.min(100,N(g['수령액'])/tot*100)+'%"></i></div>'; }
+      if(us!==null){ const tot=N(g['현금지원액'])+N(g['바우처지원액'])+N(g['자부담']); money+='<div class="m"><span>사용 '+won(g['사용액'])+'</span><b>미사용 '+won(us)+'</b></div><div class="pb"><i style="width:'+(tot?Math.min(100,N(g['사용액'])/tot*100):0)+'%;background:var(--accent)"></i></div>'; }
+      if(parts.length && up===null && us===null && SEL.indexOf(g['상태'])>=0 && N(g['현금지원액'])) money+='<div class="m"><span class="na">수령·사용액 미입력</span><span></span></div>';
     }
     return '<div class="gcard" data-gaedit="grant|'+esc(g['ID'])+'"'+(small?' style="padding:9px 12px"':'')+'><span class="tag '+(GA_TCLS[g['구분']]||'t4')+'">'+esc(g['구분']||'구분 없음')+'</span>'+
       '<div class="t">'+esc(g['사업명'])+'</div>'+(small?'':'<div class="o">'+esc(g['주관기관']||'')+(g['대상']?' · '+esc(g['대상']):'')+'</div>')+
@@ -784,7 +786,7 @@
     let h='<div class="mbox"><h3>'+GA_LABEL[kind]+' '+(it?(ro?'정보':'수정'):'추가')+'</h3><form class="mgrid" id="gaf">';
     cols.forEach(function(c){
       if(c.k==='ID') return;
-      const v=val(c.k), lab=c.k+({'종료일':kind==='grant'?' (인증: 유효기간 만료일)':'','시작일':kind==='grant'?' (행사: 행사일)':'','지원금':' (최대·승인 금액, 원)','수령액':' (인건비·현금형 누계, 원)','집행액':' (사용형·바우처 누계, 원)','연결사업':' (같은 건인 지원사업명)'}[c.k]||'')+(c.t==='num'&&['지원금','수령액','집행액'].indexOf(c.k)<0?' (원)':'');
+      const v=val(c.k), lab=c.k+({'종료일':kind==='grant'?' (인증: 유효기간 만료일)':'','시작일':kind==='grant'?' (행사: 행사일)':'','현금지원액':' (인건비 포함, 최대·승인액)','바우처지원액':' (현물)','이자지원액':' (상당액)','수령액':' (현금 받은 누계)','사용액':' (사용형·바우처 쓴 누계)','연결사업':' (같은 건인 지원사업명)'}[c.k]||'')+(c.t==='num'?' (원)':'');
       let inp;
       const opts=c.opts;
       if(opts) inp='<select name="'+esc(c.k)+'"'+(ro?' disabled':'')+'><option value=""></option>'+opts.map(function(o){return '<option'+(String(v)===o?' selected':'')+'>'+esc(o)+'</option>'}).join('')+'</select>';
