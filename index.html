@@ -236,6 +236,7 @@
   .rtbl tr.tot td{font-weight:700;background:#f7f9fc;border-top:1.5px solid var(--line)}
   .rtbl .jl{font-size:12px;color:var(--mute);font-weight:400;margin-top:2px;white-space:normal}
   .rsub{font-size:14px;margin:18px 0 8px;color:var(--navy2)} .rsub .na{font-weight:500}
+  .rtbl td.hot{color:var(--bad);font-weight:800;background:#fdf0ef} .rtbl td.warm{color:var(--warn);font-weight:700}
   .ralert{margin-top:10px;padding:10px 14px;border-radius:8px;background:var(--badbg);color:var(--bad);font-size:14px;font-weight:600}
   .rnote1{margin-top:8px;font-size:14px;color:var(--sub)}
   .rstat .bad b{color:var(--bad)} .rstat .ok b{color:var(--good)}
@@ -536,7 +537,10 @@
       blocks.forEach(function(b){
         const t=b.l.filter(function(l){return l.indexOf('|')>=0}), n=b.l.filter(function(l){return l.indexOf('|')<0});
         h+='<h6 class="rsub">'+esc(b.t)+'</h6>';
-        if(t.length>=2) h+=rTable(t[0].split('|').map(function(c){return c.trim()}), t.slice(1).map(function(l){return l.split('|').map(function(c){return c.trim()})}));
+        if(t.length>=2){ const hc=t[0].split('|').map(function(c){return c.trim()}), rr=t.slice(1).map(function(l){return l.split('|').map(function(c){return c.trim()})});
+          let tb=rTable(hc, rr);
+          if(/52시간 초과자/.test(b.t)) tb=tb.replace(/<td class="n">([\d.]+)<\/td>/g,function(m0,x){ const n=Number(x); return '<td class="n'+(n>52?' hot':n>=48?' warm':'')+'">'+x+'</td>'; });
+          h+=tb; }
         n.forEach(function(l){ const alert=/^52시간 초과:/.test(l) && !/없음$/.test(l); h+='<div class="'+(alert?'ralert':(/^※/.test(l)?'rsrc':'rnote1'))+'">'+esc(l)+'</div>'; });
       });
       return h+(stamp?'<div class="rsrc">'+esc(stamp)+'</div>':'');
@@ -606,8 +610,9 @@
   /* 근태 요약 숫자 */
   function rAttStat(pre, blocks){
     const t=pre.join(' '), g=function(re){ const m=t.match(re); return m?m[1]:''; };
-    let bad=0; const wk=blocks.find(function(b){return /52시간/.test(b.t)});
-    if(wk) wk.l.forEach(function(l){ const c=l.split('|'); if(c.length>=5 && !/^주\s*$/.test(c[0].trim())) bad+=Number(c[4])||0; });
+    let bad=0; const wk=blocks.find(function(b){return /52시간 점검/.test(b.t)});
+    if(wk){ const hl=wk.l.find(function(l){return /52시간 초과\(명\)/.test(l)}); const ci=hl?hl.split('|').map(function(c){return c.trim()}).indexOf('52시간 초과(명)'):-1;
+      if(ci>=0) wk.l.forEach(function(l){ if(l===hl||l.indexOf('|')<0) return; bad+=Number(l.split('|')[ci])||0; }); }
     const rest=pre.filter(function(l){return !/^연장근무 합계|^지각/.test(l)});
     return '<div class="rstat"><div><span>1인당 연장</span><b>'+esc(g(/1인당\s*([\d.]+)시간/))+'<small>시간</small></b></div><div><span>연장 합계</span><b>'+esc(g(/연장근무 합계\s*([\d.]+)시간/))+'<small>시간</small></b></div>'+
       '<div><span>지각</span><b>'+esc(g(/지각\s*(\d+)건/))+'<small>건</small></b></div><div><span>조퇴</span><b>'+esc(g(/조퇴\s*(\d+)건/))+'<small>건</small></b></div>'+
