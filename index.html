@@ -234,6 +234,7 @@
   .rtbl td{padding:10px 14px;border-top:1px solid #edf0f4;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   .rtbl th.l,.rtbl td.l{text-align:left;white-space:normal} .rtbl td:not(.n):not(.l){text-align:left;white-space:normal}
   .rtbl tr.tot td{font-weight:700;background:#f7f9fc;border-top:1.5px solid var(--line)}
+  .rtbl .jl{font-size:12px;color:var(--mute);font-weight:400;margin-top:2px;white-space:normal}
   .rnote{margin:10px 0 0;padding-left:18px;color:var(--sub);font-size:14px} .rnote li{margin:2px 0}
   .rsrc{margin-top:10px;font-size:12px;color:var(--mute)}
   .rmiss{margin-top:10px;font-size:13px;color:var(--mute)}
@@ -539,7 +540,8 @@
       }
     }
     const tbl=lines.filter(function(l){return l.indexOf('|')>=0});
-    if(tbl.length>=2){
+    if(no==='21' && tbl.length>=2){ const r21=rRecruit(tbl); if(r21){ h+=r21; lines=lines.filter(function(l){return l.indexOf('|')<0 && !/합계/.test(l)}); } }
+    else if(tbl.length>=2){
       const cols=tbl[0].split('|').map(function(c){return c.trim()});
       let rows=tbl.slice(1).map(function(l){return l.split('|').map(function(c){return c.trim()})});
       let cs=cols;
@@ -558,6 +560,37 @@
     }
     if(lines.length) h+='<ul class="rnote">'+lines.map(function(l){return '<li>'+esc(l.replace(/^[·•※]\s*/,''))+'</li>'}).join('')+'</ul>';
     return h+(stamp?'<div class="rsrc">'+esc(stamp)+'</div>':'');
+  }
+
+  /* 채용 현황 → 직군별 요약 (공고명 키워드로 분류) */
+  const JOB_GROUPS=[   // 위에서부터 먼저 맞는 직군으로 분류
+    ['PM·기획', /project manager|\bpm\b|기획/i],
+    ['품질', /\bqc\b|quality|품질/i],
+    ['생산·제조', /생산|제조|조립|production|manufactur/i],
+    ['경영지원·사무', /경영지원|행정|사무|인사|총무|회계|재무/i],
+    ['개발 (HW·SW)', /firmware|embedded|software|hardware|physical ai|\bml\b|\bai\b|개발|회로|기구|형상|engineer/i]
+  ];
+  function jobGroup(t){ t=String(t).replace(/\[[^\]]*\]/g,' '); for(const g of JOB_GROUPS){ if(g[1].test(t)) return g[0]; } return '기타'; }
+  function rRecruit(tbl){
+    const cols=tbl[0].split('|').map(function(c){return c.trim()});
+    const ci=function(re){ return cols.findIndex(function(c){return re.test(c)}); };
+    const iT=ci(/총 지원/), iM=ci(/당월/), iP=ci(/진행/), iH=ci(/최종/);
+    if(iT<0) return '';
+    const cur=function(v){ v=String(v||''); if(/마감/.test(v)) { const m=v.match(/(\d+)/); return m?Number(m[1]):0; } const m=v.match(/→\s*(\d+)/); if(m) return Number(m[1]); const n=v.match(/(\d+)/); return n?Number(n[1]):0; };
+    const closed=function(v){ return /마감/.test(String(v||'')); };
+    const rows=tbl.slice(1).map(function(l){return l.split('|').map(function(c){return c.trim()})}).filter(function(r){return !/합계/.test(r[0])});
+    const g={}, order=[];
+    rows.forEach(function(r){ const k=jobGroup(r[0]); if(!g[k]){ g[k]={n:0,open:0,t:0,m:0,p:0,h:0,list:[]}; order.push(k); }
+      const x=g[k]; x.n++; if(!closed(r[iT])) x.open++; x.t+=cur(r[iT]); x.m+=iM>=0?cur(r[iM]):0; x.p+=iP>=0?cur(r[iP]):0; x.h+=iH>=0?cur(r[iH]):0;
+      x.list.push(String(r[0]).replace(/\[[^\]]*\]\s*/g,'').replace(/\s*(경력직|신입)?\s*채용$/,'')); });
+    const ks=['개발 (HW·SW)','품질','PM·기획','생산·제조','경영지원·사무','기타'].filter(function(k){return g[k]});
+    const T={n:0,t:0,m:0,p:0,h:0,c:0}; ks.forEach(function(k){ ['n','t','m','p','h'].forEach(function(f){ T[f]+=g[k][f]; }); T.c+=g[k].n-g[k].open; });
+    const body=ks.map(function(k){ const x=g[k];
+      return '<tr><td class="l"><b>'+esc(k)+'</b><div class="jl">'+x.list.map(esc).join(' · ')+'</div></td><td class="n">'+x.n+(x.open!==x.n?' <span class="na">(마감 '+(x.n-x.open)+')</span>':'')+'</td><td class="n">'+x.t+'</td><td class="n">'+x.m+'</td><td class="n">'+x.p+'</td><td class="n">'+x.h+'</td></tr>'; }).join('');
+    return '<div class="rstat"><div><span>공고</span><b>'+T.n+'<small>건</small></b>'+(T.c?'<span>마감 '+T.c+'건 포함</span>':'')+'</div><div><span>당월 지원</span><b>'+T.m+'<small>명</small></b></div><div><span>전형 진행 중</span><b>'+T.p+'<small>명</small></b></div><div><span>최종합격</span><b>'+T.h+'<small>명</small></b></div></div>'+
+      '<div class="rtbl"><table><thead><tr><th class="l">직군</th><th>공고</th><th>총 지원</th><th>당월 지원</th><th>진행 중</th><th>최종합격</th></tr></thead><tbody>'+body+
+      '<tr class="tot"><td class="l">합계</td><td class="n">'+T.n+'</td><td class="n">'+T.t+'</td><td class="n">'+T.m+'</td><td class="n">'+T.p+'</td><td class="n">'+T.h+'</td></tr></tbody></table></div>'+
+      '<div class="rsrc">현재 기준 · 직군은 공고명으로 자동 분류 · 공고별 월말 대비 증감은 「작성하기」 화면에서 확인</div>';
   }
   function rItem(it){
     const body=viewBody(it), auto=rAuto(it), url=safeUrl(it['첨부링크']);
