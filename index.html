@@ -186,6 +186,7 @@
   .kcol h5{margin:2px 4px 10px;font-size:14px;display:flex;justify-content:space-between;color:var(--navy2)} .kcol h5 span{color:var(--mute);font-weight:600}
   .gcard{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
   .gcard:hover{border-color:var(--accent)}
+  .gcard[draggable=true]{cursor:grab} .gcard.dragging{opacity:.4} .kcol.over{outline:2px dashed var(--accent);outline-offset:-2px;background:#dfe8f7} .kcol.kdim{background:#eef0f3} .kcol.kdim .gcard{opacity:.75} .gfilter{align-items:center}
   .gcard .t{font-weight:700;font-size:14px;line-height:1.4;margin:6px 0 2px} .gcard .o{font-size:12px;color:var(--mute)}
   .gcard .m{margin-top:8px;font-size:12px;color:var(--sub);display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
   .gcard .pb{height:6px;background:#eef1f5;border-radius:99px;overflow:hidden;margin-top:4px} .gcard .pb i{display:block;height:100%;background:var(--good)}
@@ -621,7 +622,7 @@
 
   /* ════════ 총무 대시보드 (#ga) ════════ */
   const GA_ST=['신청 예정','신청 중','신청 완료','선정','진행 중','완료','미선정','포기'];
-  const GA_COLS=[['신청 예정',['신청 예정']],['신청 중',['신청 중']],['신청 완료 · 심사',['신청 완료']],['선정 · 진행 중',['선정','진행 중']],['완료',['완료']]];
+  const GA_COLS=[['신청 예정','신청 예정'],['신청 중','신청 중'],['신청 완료 · 심사','신청 완료'],['선정','선정'],['진행 중','진행 중'],['완료','완료'],['미선정','미선정'],['포기','포기']];
   const GA_TYPES=['지원사업','인증','채용행사','간담회·점검'];
   const GA_TCLS={'지원사업':'t1','인증':'t2','채용행사':'t3','간담회·점검':'t4'};
   const N=function(v){ return Number(v)||0; }, HAS=function(v){ return String(v==null?'':v)!==''; };
@@ -676,7 +677,7 @@
     const running=D.grant.filter(function(g){return g['구분']==='지원사업' && ['선정','진행 중'].indexOf(g['상태'])>=0}).length;
     const applying=D.grant.filter(function(g){return (g['구분']==='지원사업'||g['구분']==='인증') && APPLY.indexOf(g['상태'])>=0}).length;
     const upcoming=D.grant.filter(function(g){ const d=days(t,g['시작일']); return (g['구분']==='채용행사'||g['구분']==='간담회·점검') && d!==null && d>=0 && d<=30 && ['미선정','포기'].indexOf(g['상태'])<0; }).length;
-    let h='<div class="gahd"><div><div class="meta">㈜컨트로맥스 · 경영지원팀 · 기준일 '+esc(t)+'</div><h2>총무 대시보드</h2></div><a class="back" href="#">← 월간 보고로</a></div>'+
+    let h='<div class="gahd"><div><div class="meta">㈜컨트로맥스 · 경영지원팀 · 기준일 '+esc(t)+'</div><h2>총무 대시보드</h2></div><div>'+(canEdit()?'<button class="ebtn" data-reassign="1" style="margin-right:10px">담당자 일괄 변경</button>':'')+'<a class="back" href="#">← 월간 보고로</a></div></div>'+
       '<div class="tiles">'+
       '<div class="tile"><div class="k">월 고정비</div><div class="v">'+manwon(C.fxSum)+'</div><div class="s">'+C.fx.length+'개 항목 · 연 환산 '+won(C.fxSum*12)+'원</div></div>'+
       '<div class="tile'+(urgent?' alert':'')+'"><div class="k">90일 내 만료·통보 계약</div><div class="v">'+urgent+'<small>건</small></div><div class="s">유효 계약 '+C.ctr.length+'건</div></div>'+
@@ -692,15 +693,20 @@
 
   function gaFixed(C){
     const D=GAD.data, t=GAD.today;
-    let h='<div class="sechd"><h3>고정비</h3><span class="cnt">현재 적용 '+C.fx.length+'건 · 월 '+won(C.fxSum)+'원</span>'+addBtn('fixed','고정비 추가')+'</div>';
+    let h='<div class="sechd"><h3>고정비</h3><span class="cnt">현재 적용 '+C.fx.length+'건 · 월 '+won(C.fxSum)+'원 (VAT 포함)</span>'+addBtn('fixed','고정비 추가')+'</div>';
     if(!D.fixed.length) return h+'<div class="empty2">등록된 고정비가 없습니다. 임차료·관리비·통신비·보험료 등 정기적으로 나가는 비용을 추가하세요.</div>';
-    const by={}; C.fx.forEach(function(f){ const k=f['구분']||'기타'; by[k]=(by[k]||0)+monthly(f); });
+    const by={}; C.fx.forEach(function(f){ if(!HAS(f['금액'])) return; const k=f['계정과목']||'기타'; by[k]=(by[k]||0)+monthly(f); });
     const ks=Object.keys(by).sort(function(a,b){return by[b]-by[a]}), mx=ks.length?by[ks[0]]:1;
-    h+='<div class="bars">'+ks.map(function(k){ return '<div class="brow"><span>'+esc(k)+'</span><span class="tr"><i style="width:'+(mx?Math.max(2,by[k]/mx*100):0)+'%"></i></span><span class="am">'+won(by[k])+'원 · '+(C.fxSum?Math.round(by[k]/C.fxSum*100):0)+'%</span></div>'; }).join('')+'</div>';
-    const rows=D.fixed.slice().sort(function(a,b){ const aa=activeNow(a,t)?0:1, bb=activeNow(b,t)?0:1; return aa-bb || monthly(b)-monthly(a); });
-    h+='<div class="tblwrap"><table class="gtbl"><thead><tr><th>항목</th><th>구분</th><th>거래처</th><th>금액</th><th>주기</th><th>월 환산</th><th>지급일</th><th>지급방법</th><th>기간</th><th>연결 계약</th></tr></thead><tbody>'+
+    const noAmt=C.fx.filter(function(f){return !HAS(f['금액'])}).length, est=C.fx.filter(function(f){return f['금액기준']==='추정'}).length;
+    const own={}; C.fx.forEach(function(f){ const o=f['담당자']||'미지정'; own[o]=(own[o]||0)+1; });
+    h+='<div class="bars">'+ks.map(function(k){ return '<div class="brow"><span>'+esc(k)+'</span><span class="tr"><i style="width:'+(mx?Math.max(2,by[k]/mx*100):0)+'%"></i></span><span class="am">'+won(by[k])+'원 · '+(C.fxSum?Math.round(by[k]/C.fxSum*100):0)+'%</span></div>'; }).join('')+
+      '<div class="closed" style="margin-top:10px">월 환산 합계에서 금액 없는 항목(변동·미입력) '+noAmt+'건 제외'+(est?' · 추정 금액 '+est+'건 포함':'')+' · 담당자: '+Object.keys(own).map(function(o){return esc(o)+' '+own[o]+'건'}).join(', ')+'</div></div>';
+    const rows=D.fixed.slice().sort(function(a,b){ const aa=activeNow(a,t)?0:1, bb=activeNow(b,t)?0:1; return aa-bb || (HAS(b['금액'])?1:0)-(HAS(a['금액'])?1:0) || monthly(b)-monthly(a) || (a['계정과목']||'').localeCompare(b['계정과목']||''); });
+    const basis=function(f){ const b=f['금액기준']; return b==='추정'?' <span class="dd y">추정</span>':b==='변동'?' <span class="dd">변동</span>':''; };
+    h+='<div class="tblwrap"><table class="gtbl"><thead><tr><th>항목</th><th>계정과목</th><th>거래처</th><th>금액 / 주기</th><th>월 환산</th><th>지급일</th><th>지급방법</th><th>카드</th><th>담당자</th><th>비고</th></tr></thead><tbody>'+
       rows.map(function(f){ const on=activeNow(f,t), dEnd=days(t,f['종료일']);
-        return '<tr class="'+(on?'':'dim ')+(canEdit()?'click':'')+'" data-gaedit="fixed|'+esc(f['ID'])+'"><td class="l">'+cell(f['항목'])+(on?'':' <span class="dd">미적용</span>')+'</td><td>'+cell(f['구분'])+'</td><td>'+cell(f['거래처'])+'</td><td class="n">'+(f['금액']!==''?won(f['금액']):'<span class="na">–</span>')+'</td><td>'+cell(f['주기']||'월')+'</td><td class="n">'+won(monthly(f))+'</td><td>'+cell(f['지급일'])+'</td><td>'+cell(f['지급방법'])+'</td><td>'+cell((f['시작일']||'')+(f['시작일']||f['종료일']?' ~ ':'')+(f['종료일']||''))+(on&&dEnd!==null&&dEnd<=60?ddChip(dEnd,60):'')+'</td><td>'+cell(f['연결계약'])+'</td></tr>'; }).join('')+
+        return '<tr class="'+(on?'':'dim ')+(canEdit()?'click':'')+'" data-gaedit="fixed|'+esc(f['ID'])+'"><td class="l">'+cell(f['항목'])+(on?'':' <span class="dd">미적용</span>')+(on&&dEnd!==null&&dEnd<=60?ddChip(dEnd,60):'')+'</td><td>'+cell(f['계정과목'])+'</td><td class="l" style="min-width:120px">'+cell(f['거래처'])+'</td>'+
+          '<td class="n">'+(HAS(f['금액'])?won(f['금액']):'<span class="na">–</span>')+basis(f)+(f['주기']?' <span class="na">/ '+esc(f['주기'])+'</span>':'')+'</td><td class="n">'+(HAS(f['금액'])?won(monthly(f)):'<span class="na">–</span>')+'</td><td>'+cell(f['지급일'])+'</td><td>'+cell(f['지급방법'])+'</td><td>'+cell(f['결제카드'])+'</td><td>'+cell(f['담당자'])+'</td><td class="l" style="min-width:160px;font-size:13px;color:var(--sub)">'+cell(f['비고'])+'</td></tr>'; }).join('')+
       '</tbody></table></div>';
     return h;
   }
@@ -724,30 +730,33 @@
   function gaGrants(C){
     const D=GAD.data, t=GAD.today;
     let h='<div class="sechd"><h3>정부지원사업 · 인증 · 행사</h3><span class="cnt">'+D.grant.length+'건</span>'+addBtn('grant','추가')+'</div>'+gSummary();
-    h+='<div class="gfilter">'+['전체'].concat(GA_TYPES).map(function(k){ const n=k==='전체'?D.grant.length:D.grant.filter(function(g){return g['구분']===k}).length; return '<button class="'+(GAF===k?'on':'')+'" data-gaf="'+esc(k)+'">'+esc(k)+' '+n+'</button>'; }).join('')+'</div>';
+    h+='<div class="gfilter">'+['전체'].concat(GA_TYPES).map(function(k){ const n=k==='전체'?D.grant.length:D.grant.filter(function(g){return g['구분']===k}).length; return '<button class="'+(GAF===k?'on':'')+'" data-gaf="'+esc(k)+'">'+esc(k)+' '+n+'</button>'; }).join('')+
+      (canEdit()?'<span class="closed" style="margin:0 0 0 auto;align-self:center">카드를 끌어 다른 칸에 놓으면 상태가 바뀝니다</span>':'')+'</div>';
     const list=D.grant.filter(function(g){return GAF==='전체'||g['구분']===GAF});
-    if(!list.length) return h+'<div class="empty2">해당하는 지원사업이 없습니다.</div>';
+    if(!list.length) return h+'<div class="empty2">해당하는 항목이 없습니다.</div>';
     const cols=GA_COLS.slice(); const none=list.filter(function(g){return GA_ST.indexOf(g['상태'])<0});
-    if(none.length) cols.unshift(['상태 미입력',['']]);
+    if(none.length) cols.unshift(['상태 미입력','']);
     h+='<div class="kanban">'+cols.map(function(col){
-      const its=col[0]==='상태 미입력'?none:list.filter(function(g){return col[1].indexOf(g['상태'])>=0});
-      if(!its.length) return '';
-      return '<div class="kcol"><h5>'+esc(col[0])+'<span>'+its.length+'</span></h5>'+its.map(function(g){return gCard(g,C,t)}).join('')+'</div>';
+      const its=col[1]===''?none:list.filter(function(g){return g['상태']===col[1]});
+      if(!its.length && !canEdit()) return '';
+      const dim=col[1]==='미선정'||col[1]==='포기';
+      return '<div class="kcol'+(dim?' kdim':'')+'" data-drop="'+esc(col[1])+'"><h5>'+esc(col[0])+'<span>'+its.length+'</span></h5>'+its.map(function(g){return gCard(g,C,t)}).join('')+'</div>';
     }).join('')+'</div>';
-    const dead=list.filter(function(g){return ['미선정','포기'].indexOf(g['상태'])>=0});
-    if(dead.length) h+='<details class="closed"><summary>미선정 · 포기 '+dead.length+'건</summary><div class="kanban" style="margin-top:8px"><div class="kcol">'+dead.map(function(g){return gCard(g,C,t)}).join('')+'</div></div></details>';
     return h;
   }
   function gSummary(){
-    const rows=GAD.data.grant.filter(function(g){return g['구분']==='지원사업' && MONEY.some(function(m){return N(g[m[0]])})});
+    const rows=GAD.data.grant.filter(function(g){return MONEY.some(function(m){return N(g[m[0]])})});
     if(!rows.length) return '';
     const sum=function(list,k){ return list.reduce(function(a,g){return a+N(g[k])},0); };
+    const tot=function(list){ return sum(list,'현금지원액')+sum(list,'바우처지원액')+sum(list,'이자지원액'); };
     const cellN=function(v){ return v?won(v):'<span class="na">–</span>'; };
-    const line=function(label,list,bold){ return '<tr><td class="l">'+(bold?'<b>'+label+'</b>':label)+' <span class="na">'+list.length+'건</span></td>'+MONEY.map(function(m){ const v=sum(list,m[0]); return '<td class="n">'+(bold?'<b>'+cellN(v)+'</b>':cellN(v))+'</td>'; }).join('')+'</tr>'; };
+    const line=function(label,list,bold){ const B=function(x){return bold?'<b>'+x+'</b>':x};
+      return '<tr><td class="l">'+B(label)+' <span class="na">'+list.length+'건</span></td>'+MONEY.slice(0,3).map(function(m){ return '<td class="n">'+B(cellN(sum(list,m[0])))+'</td>'; }).join('')+
+        '<td class="n" style="background:#f2f6ff">'+B(cellN(tot(list)))+'</td>'+MONEY.slice(3).map(function(m){ return '<td class="n">'+B(cellN(sum(list,m[0])))+'</td>'; }).join('')+'</tr>'; };
     const a=rows.filter(function(g){return SEL.indexOf(g['상태'])>=0}), b=rows.filter(function(g){return APPLY.indexOf(g['상태'])>=0});
-    return '<div class="tblwrap" style="margin-bottom:14px"><table class="gtbl"><thead><tr><th>지원사업 금액 (원)</th><th>현금 지원</th><th>바우처 지원</th><th>이자지원</th><th>자부담</th><th>수령</th><th>사용</th></tr></thead><tbody>'+
-      line('확정 (선정·진행 중·완료)',a,true)+line('미확정 (신청 단계, 최대 금액)',b,false)+'</tbody></table></div>'+
-      '<div class="closed" style="margin:-6px 0 14px">유형이 다른 금액은 더하지 않습니다. 미수령 = 현금 지원 − 수령, 미사용 = 현금 지원 + 바우처 + 자부담 − 사용 (수령·사용을 입력한 사업만 계산)</div>';
+    return '<div class="tblwrap" style="margin-bottom:14px"><table class="gtbl"><thead><tr><th>지원금액 (원) · 지원사업·인증·행사</th><th>현금 지원</th><th>바우처 지원</th><th>이자지원</th><th style="background:#e6efff">지원액 총액</th><th>자부담</th><th>수령</th><th>사용</th></tr></thead><tbody>'+
+      line('확정 (선정·진행 중·완료)',a,false)+line('미확정 (신청 단계, 최대 금액)',b,false)+line('총액',a.concat(b),true)+'</tbody></table></div>'+
+      '<div class="closed" style="margin:-6px 0 14px">지원액 총액 = 현금 + 바우처 + 이자지원(상당액). 자부담은 포함하지 않습니다. 미선정·포기 건은 제외. 미수령 = 현금 − 수령, 미사용 = 현금 + 바우처 + 자부담 − 사용 (입력한 사업만)</div>';
   }
   function gCard(g,C,t){
     const small=g['상태']==='완료' && (g['구분']==='채용행사'||g['구분']==='간담회·점검');
@@ -766,7 +775,7 @@
       if(us!==null){ const tot=N(g['현금지원액'])+N(g['바우처지원액'])+N(g['자부담']); money+='<div class="m"><span>사용 '+won(g['사용액'])+'</span><b>미사용 '+won(us)+'</b></div><div class="pb"><i style="width:'+(tot?Math.min(100,N(g['사용액'])/tot*100):0)+'%;background:var(--accent)"></i></div>'; }
       if(parts.length && up===null && us===null && SEL.indexOf(g['상태'])>=0 && N(g['현금지원액'])) money+='<div class="m"><span class="na">수령·사용액 미입력</span><span></span></div>';
     }
-    return '<div class="gcard" data-gaedit="grant|'+esc(g['ID'])+'"'+(small?' style="padding:9px 12px"':'')+'><span class="tag '+(GA_TCLS[g['구분']]||'t4')+'">'+esc(g['구분']||'구분 없음')+'</span>'+
+    return '<div class="gcard" data-gaedit="grant|'+esc(g['ID'])+'"'+(canEdit()?' draggable="true" data-drag="'+esc(g['ID'])+'"':'')+(small?' style="padding:9px 12px"':'')+'><span class="tag '+(GA_TCLS[g['구분']]||'t4')+'">'+esc(g['구분']||'구분 없음')+'</span>'+
       '<div class="t">'+esc(g['사업명'])+'</div>'+(small?'':'<div class="o">'+esc(g['주관기관']||'')+(g['대상']?' · '+esc(g['대상']):'')+'</div>')+
       money+(w.length?'<div class="w">'+w.join('<br>')+'</div>':'')+
       (!small&&g['진행현황']?'<div class="o" style="margin-top:6px">'+esc(g['진행현황'])+'</div>':'')+'</div>';
@@ -820,6 +829,49 @@
     };
     const first=m.querySelector('input,select'); if(first && !ro) first.focus();
   }
+  /* 칸반 드래그 앤 드롭 → 상태 변경 */
+  let DRAG=null;
+  document.addEventListener('dragstart',function(e){ const c=e.target.closest&&e.target.closest('[data-drag]'); if(!c||MODE!=='ga') return; DRAG=c.getAttribute('data-drag'); c.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; try{e.dataTransfer.setData('text/plain',DRAG)}catch(x){} });
+  document.addEventListener('dragend',function(e){ const c=e.target.closest&&e.target.closest('[data-drag]'); if(c) c.classList.remove('dragging'); document.querySelectorAll('.kcol.over').forEach(function(k){k.classList.remove('over')}); DRAG=null; });
+  document.addEventListener('dragover',function(e){ if(!DRAG) return; const k=e.target.closest('[data-drop]'); if(!k) return; e.preventDefault(); e.dataTransfer.dropEffect='move';
+    document.querySelectorAll('.kcol.over').forEach(function(x){ if(x!==k) x.classList.remove('over'); }); k.classList.add('over'); });
+  document.addEventListener('drop',function(e){
+    if(!DRAG) return; const k=e.target.closest('[data-drop]'); if(!k) return; e.preventDefault();
+    const st=k.getAttribute('data-drop'), id=DRAG; DRAG=null; k.classList.remove('over');
+    const g=GAD.data.grant.find(function(x){return x['ID']===id}); if(!g || g['상태']===st) return;
+    const prev=g['상태']; g['상태']=st; $('ga3').innerHTML=gaGrants(gaCalc());
+    const fields={}; GAD.schema.grant.forEach(function(c){ if(c.k!=='ID') fields[c.k]=g[c.k]==null?'':g[c.k]; });
+    call('saveGa',{token:TOKEN, kind:'grant', id:id, fields:fields}).then(function(r){
+      if(!r.ok){ g['상태']=prev; $('ga3').innerHTML=gaGrants(gaCalc()); toast(r.expired?'세션이 만료되었습니다. 다시 로그인하세요.':(r.msg||'상태 변경 실패'), true); return; }
+      toast('「'+g['사업명']+'」 → '+(st||'상태 미입력')); renderGa();
+    }).catch(function(){ g['상태']=prev; $('ga3').innerHTML=gaGrants(gaCalc()); toast('서버 연결 오류로 상태를 바꾸지 못했습니다.', true); });
+  });
+
+  /* 담당자 일괄 변경 */
+  document.addEventListener('click',function(e){
+    if(MODE!=='ga' || !e.target.closest('[data-reassign]')) return;
+    const cnt={}; ['fixed','contract','grant'].forEach(function(k){ (GAD.data[k]||[]).forEach(function(x){ const o=String(x['담당자']||'').trim(); if(o) cnt[o]=(cnt[o]||0)+1; }); });
+    const names=Object.keys(cnt).sort();
+    const m=$('modal');
+    m.innerHTML='<div class="mbox" style="max-width:480px"><h3>담당자 일괄 변경</h3><p class="closed" style="margin:-6px 0 14px">고정비·계약·지원사업에서 기존 담당자로 된 항목을 모두 새 담당자로 바꿉니다.</p><form class="mgrid" id="raf" style="grid-template-columns:1fr">'+
+      '<label>기존 담당자<select name="from">'+names.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+' ('+cnt[n]+'건)</option>'}).join('')+'</select></label>'+
+      '<label>새 담당자<input name="to" placeholder="이름"></label></form><div class="eact"><button type="button" class="cancel">취소</button><button type="button" class="save">변경</button></div></div>';
+    m.classList.remove('hidden'); document.body.style.overflow='hidden';
+    const close=function(){ m.classList.add('hidden'); m.innerHTML=''; m.onclick=null; document.body.style.overflow=''; };
+    m.onclick=function(ev){
+      if(ev.target===m || ev.target.closest('.cancel')){ close(); return; }
+      const sv=ev.target.closest('.save'); if(!sv) return;
+      const f=$('raf').elements, from=f.from.value, to=f.to.value.trim();
+      if(!to){ toast('새 담당자를 입력하세요.', true); return; }
+      if(!window.confirm('「'+from+'」 담당 '+cnt[from]+'건을 「'+to+'」(으)로 바꿀까요?')) return;
+      sv.disabled=true; sv.textContent='변경 중…';
+      call('reassignGa',{token:TOKEN, from:from, to:to}).then(function(r){
+        if(!r.ok){ sv.disabled=false; sv.textContent='변경'; toast(r.msg||'변경 실패', true); return; }
+        close(); toast(r.count+'건의 담당자를 「'+to+'」(으)로 바꿨습니다.'); showGa();
+      }).catch(function(){ sv.disabled=false; sv.textContent='변경'; toast('서버 연결 오류', true); });
+    };
+    m.querySelector('input').focus();
+  });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape' && !$('modal').classList.contains('hidden')){ $('modal').classList.add('hidden'); $('modal').innerHTML=''; document.body.style.overflow=''; } });
 
   (function(){
