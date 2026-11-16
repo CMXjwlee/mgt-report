@@ -520,6 +520,19 @@
     if(sc.type==='table'){ const rows=textToTbl(sc.cols, raw); if(rows) return tableHtml(sc.cols, rows); }
     if(sc.type==='links'){ const rows=textToTbl(['자료명','링크'], raw); if(rows) return '<ul class="vlinks">'+rows.map(function(r){ const u=safeUrl(r[1]); return '<li>'+(u?'<a target="_blank" rel="noopener" href="'+esc(u)+'">'+esc(r[0]||u)+' →</a>':esc(r.join(' ')))+'</li>'; }).join('')+'</ul>'; }
     if(sc.type==='list'){ return '<ul class="vlist">'+textToList(raw).map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>'; }
+    // 텍스트 칸에 「a | b | c」 표가 들어 있으면 표로 그림 (연속된 | 줄 = 한 표, 첫 줄 = 머리글)
+    const L=raw.split('\n');
+    if(L.filter(function(l){return l.indexOf('|')>=0}).length>=2){
+      const fmt=function(c){ c=c.trim(); return /^-?\d{5,}$/.test(c)?Number(c).toLocaleString('ko-KR'):c; };
+      let h='', buf=[];
+      const flush=function(){ if(!buf.length) return;
+        if(buf.length>=2){ const rows=buf.map(function(l){return l.split('|').map(fmt)}); h+=rTable(rows[0], rows.slice(1)); }
+        else h+='<div class="body">'+esc(buf[0])+'</div>';
+        buf=[]; };
+      L.forEach(function(l){ if(l.indexOf('|')>=0) buf.push(l); else { flush(); if(l.trim()) h+='<div class="body">'+esc(l)+'</div>'; } });
+      flush();
+      return h;
+    }
     return '<div class="body">'+esc(raw)+'</div>';
   }
   function tableHtml(cols, rows){
