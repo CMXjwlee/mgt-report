@@ -119,7 +119,8 @@
   .vlist{margin:10px 0 0;padding-left:20px} .vlist li{margin:3px 0}
   .vlinks{margin:10px 0 0;padding-left:0;list-style:none} .vlinks li{margin:4px 0} .vlinks a{color:var(--accent);font-weight:600;text-decoration:none}
   .vtbl{margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:auto}
-  .vtbl table{min-width:0;font-size:14px} .vtbl th,.vtbl td{padding:9px 12px;white-space:normal} .vtbl td{text-align:center}
+  .vtbl table{min-width:0;font-size:14px} .vtbl th,.vtbl td{padding:9px 12px;white-space:normal} .vtbl td{text-align:center} .vtbl th.l,.vtbl td.l{text-align:left}
+  .vtbl th small,.rtbl th small{display:block;font-size:11.5px;font-weight:500;color:var(--mute);white-space:nowrap}
   .efield{margin-top:12px}
   .etext{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font:inherit;font-size:15px;line-height:1.6;resize:vertical;outline:none}
   .etext:focus,.efield input:focus,.ekpi input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,214,.12)}
@@ -537,8 +538,10 @@
     }
     return '<div class="body">'+esc(raw)+'</div>';
   }
+  // 머리글의 괄호 설명은 한 줄 아래 작은 글씨로: 「총 지원 (월말→현재)」
+  function thLabel(c){ c=String(c==null?'':c); const m=c.match(/^(.*?)\s*(\([^()]*\))$/); return m&&m[1]?esc(m[1])+'<small>'+esc(m[2])+'</small>':esc(c); }
   function tableHtml(cols, rows){
-    return '<div class="vtbl"><table><thead><tr>'+cols.map(function(c){return '<th>'+esc(c)+'</th>'}).join('')+'</tr></thead><tbody>'+
+    return '<div class="vtbl"><table><thead><tr>'+cols.map(function(c,i){return '<th class="'+(i===0?'l':'')+'">'+thLabel(c)+'</th>'}).join('')+'</tr></thead><tbody>'+
       rows.map(function(r){return '<tr>'+r.map(function(c,i){return '<td class="'+(i===0?'l':'')+'">'+(String(c).trim()?esc(c):'<span class="na">–</span>')+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table></div>';
   }
 
@@ -549,7 +552,7 @@
   const STAMP=/^\(자동 집계[^)]*\)$/;
   const isNumCell=function(s){ s=String(s).trim(); return /^[+\-−]?[\d,.]+\s*(%|원|명|건|시간)?$/.test(s) || /^[\d,.]+\s*→\s*[\d,.]+/.test(s); };
   function rTable(cols, rows){
-    return '<div class="rtbl"><table><thead><tr>'+cols.map(function(c,i){return '<th class="'+(i===0?'l':'')+'">'+esc(c)+'</th>'}).join('')+'</tr></thead><tbody>'+
+    return '<div class="rtbl"><table><thead><tr>'+cols.map(function(c,i){return '<th class="'+(i===0?'l':'')+'">'+thLabel(c)+'</th>'}).join('')+'</tr></thead><tbody>'+
       rows.map(function(r){ const tot=/^(합계|총계|현재 합계|월말 합계)/.test(String(r[0]||'')); return '<tr'+(tot?' class="tot"':'')+'>'+r.map(function(c,i){ c=String(c==null?'':c).trim(); return '<td class="'+(i===0?'l':(isNumCell(c)?'n':''))+'">'+(c?esc(c):'<span class="na">–</span>')+'</td>'; }).join('')+'</tr>'; }).join('')+'</tbody></table></div>';
   }
   function rAuto(it){
@@ -786,7 +789,7 @@
         const mid=gid+'_'+mi;
         nav+='<a class="l2" href="#'+mid+'">'+esc(m.t)+'</a>';
         html+='<h4 class="mid" id="'+mid+'">'+esc(m.t)+'</h4><div class="grid">';
-        m.list.forEach(function(it){ html+='<div class="card'+(schemaOf(it).type==='table'?' wide':'')+'" id="c'+esc(it['No'])+'">'+cardView(it)+'</div>'; });
+        m.list.forEach(function(it){ html+='<div class="card'+(cardWide(it)?' wide':'')+'" id="c'+esc(it['No'])+'">'+cardView(it)+'</div>'; });
         html+='</div>';
       });
       html+='</section>';
@@ -794,6 +797,10 @@
     $('nav').innerHTML=nav; $('main').innerHTML=html;
   }
 
+  // 넓은 화면에서 한 줄 전체를 쓰는 카드: 표 입력, 자동 집계(표), 표가 들어간 내용, Appendix
+  function cardWide(it){
+    return schemaOf(it).type==='table' || /\|/.test(String(it['자동데이터']||'')) || /\|/.test(String(it['보고내용']||'')) || /Appendix|부록/i.test(String(it['대제목']||''));
+  }
   function autoBox(it, locked){
     const auto=String(it['자동데이터']||'').trim(); if(!auto) return '';
     const no=String(it['No']), src=no==='21'?'나인하이어 연동':(['25','26','36'].indexOf(no)>=0?'총무 대시보드 연동':'인사 DB 연동');
