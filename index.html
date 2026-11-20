@@ -395,7 +395,15 @@
     31: { type:'table', cols:['부서','추진 과제','일정','담당','비고'] },
     32: { type:'links' }, 33: { type:'links' }, 34: { type:'links' }, 35: { type:'links' }
   };
-  const schemaOf = function(it){ return SCHEMA[Number(it['No'])] || { type:'text' }; };
+  // 입력 형식: 서버가 「보고서_구성」 시트 값(_type·_cols·_rows·_ph)을 주면 그걸 우선, 없으면 위 기본값
+  const schemaOf = function(it){
+    const base=SCHEMA[Number(it['No'])]||{};
+    if(it && it._type){
+      const t=it._type, cols=(it._cols&&it._cols.length)?it._cols:(base.cols||(t==='table'?['내용']:undefined));
+      return { type:t, cols:cols, rows:(it._rows&&it._rows.length)?it._rows:undefined, rowsFn:it._rowsFn||undefined, n:base.n||3, ph:it._ph||it['작성가이드']||base.ph||'' };
+    }
+    return SCHEMA[Number(it['No'])] || { type:'text' };
+  };
 
   /* ── 시트 저장 형식 (시트에서도 읽고 고칠 수 있는 텍스트) ──
      표 : 첫 줄 열 이름, 이후 행 — 칸 구분 " | "
@@ -803,7 +811,7 @@
   }
   function autoBox(it, locked){
     const auto=String(it['자동데이터']||'').trim(); if(!auto) return '';
-    const no=String(it['No']), src=no==='21'?'나인하이어 연동':(['25','26','36'].indexOf(no)>=0?'총무 대시보드 연동':'인사 DB 연동');
+    const no=String(it['No']), src=it._auto || (no==='21'?'나인하이어 연동':(['25','26','36'].indexOf(no)>=0?'총무 대시보드 연동':'인사 DB 연동'));
     const lines=auto.split('\n'), tbl=lines.filter(function(l){return l.indexOf('|')>=0});
     let inner;
     if(lines.some(function(l){return /^## /.test(l)})){
